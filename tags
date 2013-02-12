@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+InvMatrixpp	matrixpp.hpp	/^class InvMatrixpp : public SqrMatrixpp {$/;"	c
+LNum	matrixpp.hpp	/^  LNum(const LNum & x) {$/;"	f	class:InvMatrixpp
+LNum	matrixpp.hpp	/^  LNum(const LNum & x) {$/;"	f	class:Matrixpp
+LNum	matrixpp.hpp	/^  LNum(const LNum & x) {$/;"	f	class:SqrMatrixpp
+LNum	matrixpp.hpp	/^  LNum(int size=32) : size_(size) {$/;"	f	class:InvMatrixpp
+LNum	matrixpp.hpp	/^  LNum(int size=32) : size_(size) {$/;"	f	class:Matrixpp
+LNum	matrixpp.hpp	/^  LNum(int size=32) : size_(size) {$/;"	f	class:SqrMatrixpp
+Matrixpp	matrixpp.hpp	/^class Matrixpp {$/;"	c
+SqrMatrixpp	matrixpp.hpp	/^class SqrMatrixpp : public Matrixpp {$/;"	c
+_MATRIXPP_H	matrixpp.hpp	2;"	d
+height	matrixpp.hpp	/^  int height, width;      \/\/ nebo pres template<> ???$/;"	m	class:Matrixpp
+main	main.cpp	/^int main(int argc, const char* argv[]) {$/;"	f
+notAMatrix	matrixpp.hpp	/^  bool notAMatrix;        \/\/ spatne rozmery u soucinu matic (anebo vyjimka ???)$/;"	m	class:Matrixpp
+operator =	matrixpp.hpp	/^  LNum & operator=(const LNum & x) {$/;"	f	class:InvMatrixpp
+operator =	matrixpp.hpp	/^  LNum & operator=(const LNum & x) {$/;"	f	class:Matrixpp
+operator =	matrixpp.hpp	/^  LNum & operator=(const LNum & x) {$/;"	f	class:SqrMatrixpp
+vals	matrixpp.hpp	/^  T vals[];               \/\/ 1-D vyska * sirka$/;"	m	class:Matrixpp
+value_type	matrixpp.hpp	/^  typedef T value_type;$/;"	t	class:Matrixpp
+width	matrixpp.hpp	/^  int height, width;      \/\/ nebo pres template<> ???$/;"	m	class:Matrixpp
+~LNum	matrixpp.hpp	/^  ~LNum() {$/;"	f	class:InvMatrixpp
+~LNum	matrixpp.hpp	/^  ~LNum() {$/;"	f	class:Matrixpp
+~LNum	matrixpp.hpp	/^  ~LNum() {$/;"	f	class:SqrMatrixpp
