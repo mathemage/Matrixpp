@@ -6,9 +6,10 @@
  the License, or (at your option) any later version.
                  http://www.gnu.org/licenses/
 ******************************************************************************/
-#include "main.hpp"
+#include "all.hpp"
 #include "matrixpp.hpp"
 
+using namespace std;
 using namespace mtrx;
 
 int main(int argc, const char* argv[]) {
@@ -18,6 +19,10 @@ int main(int argc, const char* argv[]) {
   for (int i = 0; i < args.size(); i++) {
     cout << args[i] << endl;
   }
+
+  Matrix<char> m;
+  cin >> m;
+  cout << m;
   
   return 0;
 }
