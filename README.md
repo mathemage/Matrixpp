@@ -1,4 +1,7 @@
-Matrixpp
-========
+============================================================================
+Matrix++ - library for manipulation with matrices represented as containers.
+============================================================================
 
-Library for matrix containter (with LUP and QR factorization)
+Supported features:
+- LUP factorization
+- QR factorization

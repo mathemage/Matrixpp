@@ -1,29 +1,43 @@
+/******************************************************************************
+      Copyright (C) 2013 Karel Ha <mathemage@gmail.com>
+
+ Distributed under the terms of the GNU General Public License (GPL)
+ as published by the Free Software Foundation; either version 2 of
+ the License, or (at your option) any later version.
+                 http://www.gnu.org/licenses/
+******************************************************************************/
 #ifndef _MATRIXPP_H
 #define _MATRIXPP_H 1
 
-namespace matrixpp {
+namespace mtrx {
   // trida reprezentujici kontejner matic
   // ??? interface pro T ??? <- uzavrenost na +,-,* 
   // ??? via ABC (virtual operator+,-,*) - viz http://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
   template <typename T>
   class Matrix {
   private:
-    T * values;             // 1-D vyska * sirka
-    bool notAMatrix;        // spatne rozmery u soucinu matic (anebo vyjimka ???)
+    T ** values;            // 1-D vyska * sirka
+    //bool notAMatrix;      // spatne rozmery u soucinu matic (anebo vyjimka ???)
     int height, width;      // nebo pres template<> ???
     
     // ============================NORMA: kontejnery===============================
     // ===========================/NORMA: kontejnery===============================
   public:
+    int get_width() {return width;}
+    int get_height() {return height;}
+
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
-    Matrix(int h=0, int w=0, T * data=0) : height(h), width(w), values(data) { }
+    Matrix(int h=0, int w=0, T ** data=0) : height(h), width(w), values(data) { }
 
     // prirazeni
-    Matrix & operator=(const Matrix<T> & x) {
-      T * current = values;
-      copy
-    // !!!
+    Matrix & operator=(const Matrix<T> & m) : height(m.get_height()), width(m.get_width()) {
+      values = new T [height*width];
+      it = this->begin();
+      for (Matrix::iterator it_m = m.begin(); current != m.end(); it_m++, it++) {
+    // !!! - dereference pointeru pro kopirovani dat
+        it = it_m;
+      }
     }
 
     // copy-constructor
@@ -32,7 +46,7 @@ namespace matrixpp {
     }
 
     ~Matrix() {
-      digits_.clear();
+      delete [] values;
     }
     // ===========================/KANONICKA FORMA===============================
     
@@ -44,6 +58,8 @@ namespace matrixpp {
     // iteratory z pointeru ???
     // po radcich ??? po sloupcich ??? diagonala ???
     // reversni ???
+    typedef T * iterator;
+    typedef const T * const_iterator;
     // ===========================/NORMA: iteratory===============================
 
     // ============================MATICOVE OPERACE===============================
