@@ -7,9 +7,15 @@
                  http://www.gnu.org/licenses/
 ******************************************************************************/
 #include <iostream>
+using namespace std;
+
 #include <string>
 #include <vector>
-#include <ctime>
-#include <cstdlib>
-#include <deque>
+//#include <ctime>
+//#include <cstdlib>
+//#include <deque>
+
 #include <fstream>
+
+#include "matrixpp.hpp"
+using namespace mtrx;

@@ -11,7 +11,11 @@ using namespace mtrx;
 
 // prirazeni
 template<typename T>
-Matrix<T> & Matrix<T>::operator=(const Matrix<T> & m) {
+Matrix<T> & Matrix<T>::operator=(Matrix<T> const & m) {
+  if (this == &m) {
+    return *this;
+  }
+
   height = m.get_height();
   width = m.get_width();
 
@@ -25,9 +29,11 @@ Matrix<T> & Matrix<T>::operator=(const Matrix<T> & m) {
   for (Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
     *it = *it_m;
   }
+
+  return *this;
 }
 
-// vypis matice cisla
+// vypis matice
 template<typename T>
 ostream & operator<<(ostream & out, const Matrix<T> & m) {
   for (typename Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++) {

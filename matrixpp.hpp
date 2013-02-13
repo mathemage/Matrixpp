@@ -19,7 +19,7 @@ namespace mtrx {
   template<typename T>
   class Matrix {
   private:
-    T ** values;            // 1-D vyska * sirka
+    T * values;             // 1-D vyska * sirka
     //bool notAMatrix;      // spatne rozmery u soucinu matic (anebo vyjimka ???)
     unsigned height, width;      // nebo pres template<> ???
     
@@ -31,58 +31,39 @@ namespace mtrx {
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
-    Matrix<T>(unsigned h=0, unsigned w=0, T ** data=0) : height(h), width(w), values(data) { }
-
-    // prirazeni
-    Matrix<T> & operator=(const Matrix<T> & m);
-
-    // copy-constructor
-    Matrix<T>(const Matrix<T> & x) {
-      *this = x;
-    }
-
-    ~Matrix<T>() {
-      delete [] values;
-    }
+    Matrix(unsigned h=0, unsigned w=0, T * data=0) : height(h), width(w), values(data) { } 
+    Matrix & operator=(const Matrix & m);       // prirazeni
+    Matrix(const Matrix & x) { *this = x; }     // copy-constructor
+    ~Matrix() { delete [] values; }
     // ===========================/KANONICKA FORMA===============================
     
     // ============================NORMA: iteratory===============================
-    // iteratory z pointeru ???
-    // po radcich ??? po sloupcich ??? diagonala ???
-    // reversni ???
+    // iteratory z pointeru
     typedef T * iterator;
     typedef const T * const_iterator;     // ukazatel na konstantni data
     // ===========================/NORMA: iteratory===============================
 
     // ============================NORMA: kontejnery===============================
-    // !!!
     typedef T value_type;
-
-    Matrix<T>::iterator begin() {
-      return values;
-    }
-
-    Matrix<T>::const_iterator begin() const {
-      return values;
-    }
-
-    Matrix<T>::iterator end() {
-      return values + (height * width - 1);
-    }
-
-    Matrix<T>::const_iterator end() const {
-      return values + (height * width - 1);
-    }
+    iterator begin() { return values; }
+    const_iterator begin() const { return values; }
+    iterator end() { return values + (height * width - 1); }
+    const_iterator end() const { return values + (height * width - 1); }
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
-    Matrix<T> mul_by_scal(const T & scalar);          // nasobeni skalarem
-    Matrix<T> transpose();                            // transposice
-    Matrix<T> gauss_elim();                           // Gaussova eliminace
-    Matrix<T> gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)
-    void LUP(Matrix<T> & L, Matrix<T> & U, Matrix<T> & P);  // LUP dekomposice
-    void QR(Matrix<T> & Q, Matrix<T> & R);                  // QR dekomposice
+    Matrix mul_by_scal(const T & scalar);          // nasobeni skalarem
+    Matrix transpose();                            // transposice
+    Matrix gauss_elim();                           // Gaussova eliminace
+    Matrix gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)
+    void LUP(Matrix & L, Matrix & U, Matrix & P);  // LUP dekomposice
+    void QR(Matrix & Q, Matrix & R);                  // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
+    
+    template<typename T2>
+    friend ostream & operator<<(ostream & out, const Matrix<T2> & m);
+    template<typename T2>
+    friend istream & operator>>(istream & in, Matrix<T2> & m);
   };
 
   /*
@@ -155,15 +136,7 @@ namespace mtrx {
     // ============================MATICOVE OPERACE===============================
   }
   */
-
-  // vypis matice cisla
-  template<typename T>
-  ostream & operator<<(ostream & out, const Matrix<T> & m);
-
-  // vstup dat zvenjsku
-  template<typename T>
-  istream & operator>>(istream & out, Matrix<T> & m);
-
+  
   // soucet 2 matic
   template<typename T>
   Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y);

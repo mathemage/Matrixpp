@@ -7,10 +7,6 @@
                  http://www.gnu.org/licenses/
 ******************************************************************************/
 #include "all.hpp"
-#include "matrixpp.hpp"
-
-using namespace std;
-using namespace mtrx;
 
 int main(int argc, const char* argv[]) {
   vector<string> args(argv, argv+argc);
@@ -20,7 +16,7 @@ int main(int argc, const char* argv[]) {
     cout << args[i] << endl;
   }
 
-  Matrix<char> m;
+  Matrix<int> m;
   cin >> m;
   cout << m;
   
