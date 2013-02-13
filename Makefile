@@ -7,10 +7,10 @@ OBJECTS = matrixpp.o io.o
 #	$(CC) $(CFLAGS) $(OBJECTS) -o Matrix++ && rm $(OBJECTS)
 
 io.exe : $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o io.exe && rm $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o io.exe ; rm $(OBJECTS)
 
 %.o : %.cpp
-	ctags *.cpp *.hpp -R && $(CC) $(CFLAGS) -c $<
+	ctags *.cpp *.hpp -R ; $(CC) $(CFLAGS) -c $<
 
 clean:
 	rm $(OBJECTS)

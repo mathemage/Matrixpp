@@ -18,7 +18,7 @@ int main(int argc, const char* argv[]) {
 
   Matrix<int> m;
   cin >> m;
-  cout << m;
+  cout << m << endl;
   
   return 0;
 }

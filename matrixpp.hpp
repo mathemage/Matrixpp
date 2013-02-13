@@ -26,13 +26,30 @@ namespace mtrx {
     // ============================NORMA: kontejnery===============================
     // ===========================/NORMA: kontejnery===============================
   public:
-    unsigned get_width() {return width;}
-    unsigned get_height() {return height;}
+    unsigned get_width() const {return width;}
+    unsigned get_height() const {return height;}
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
     Matrix(unsigned h=0, unsigned w=0, T * data=0) : height(h), width(w), values(data) { } 
-    Matrix & operator=(const Matrix & m);       // prirazeni
+    Matrix & operator=(const Matrix & m) {      // prirazeni
+      if (this != &m) {
+        height = m.get_height();
+        width = m.get_width();
+
+        // puvodni data
+        if (0 != m.values) {
+          delete [] values;
+        }
+        values = new T [height*width];
+
+        Matrix<T>::iterator it = this->begin();
+        for (Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
+          *it = *it_m;
+        }
+      }
+      return *this;
+    }
     Matrix(const Matrix & x) { *this = x; }     // copy-constructor
     ~Matrix() { delete [] values; }
     // ===========================/KANONICKA FORMA===============================
@@ -47,8 +64,8 @@ namespace mtrx {
     typedef T value_type;
     iterator begin() { return values; }
     const_iterator begin() const { return values; }
-    iterator end() { return values + (height * width - 1); }
-    const_iterator end() const { return values + (height * width - 1); }
+    iterator end() { return values + height * width; }
+    const_iterator end() const { return values + height * width; }
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
@@ -60,95 +77,41 @@ namespace mtrx {
     void QR(Matrix & Q, Matrix & R);                  // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
     
-    template<typename T2>
-    friend ostream & operator<<(ostream & out, const Matrix<T2> & m);
-    template<typename T2>
-    friend istream & operator>>(istream & in, Matrix<T2> & m);
+    // vypis matice
+    friend ostream & operator<<(ostream & out, const Matrix & m) {
+      for (typename Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++) {
+        out << *it_m << "\t";
+      }
+      return out;
+    }
+    
+    // zadavani polozek matice zvnejsku
+    friend istream & operator>>(istream & in, Matrix & m) {
+      // rozmery
+      // ??? vyjimka pro kontrolu ???
+      in >> m.height >> m.width;
+
+      // polozky
+      if (0 != m.values) {
+        delete [] m.values;
+      }
+      m.values = new T [m.height*m.width];
+      cout << "allocated " << m.height*m.width << endl;
+      for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
+        in >> *it_m;
+        cout << "wrote " << *it_m << " @ " << it_m << endl;
+      }
+      return in;
+    }
   };
 
-  /*
-  // trida representujici kontejner ctvercovych matic
-  // dedicnost???
-  template <typename T>
-  class SqrMatrixpp : public Matrixpp {
-  public:
-    // ============================KANONICKA FORMA===============================
-    // konstruktor
-    LNum(int size=32) : size_(size) {
-      digits_.resize(size, 0);
-    }
-
-    // prirazeni
-    LNum & operator=(const LNum & x) {
-      size_ = x.get_size();
-      digits_.resize(size_, 0);
-      for (int i = 0; i < size_ && i < x.get_size(); i++) {
-        digits_[i] = x[i];
-      }
-    }
-
-    // copy-constructor
-    LNum(const LNum & x) {
-      *this = x;
-    }
-
-    ~LNum() {
-      digits_.clear();
-    }
-    // ===========================/KANONICKA FORMA===============================
-    
-    // ============================MATICOVE OPERACE===============================
-    T det();                             // determinant <- via GE nebo LUP rozklad
-    // ============================MATICOVE OPERACE===============================
-  }
-
-  // trida representujici kontejner regularnich/invertibilnich matic
-  template <typename T>
-  class InvMatrixpp : public SqrMatrixpp {
-  public:
-    // ============================KANONICKA FORMA===============================
-    // konstruktor
-    LNum(int size=32) : size_(size) {
-      digits_.resize(size, 0);
-    }
-
-    // prirazeni
-    LNum & operator=(const LNum & x) {
-      size_ = x.get_size();
-      digits_.resize(size_, 0);
-      for (int i = 0; i < size_ && i < x.get_size(); i++) {
-        digits_[i] = x[i];
-      }
-    }
-
-    // copy-constructor
-    LNum(const LNum & x) {
-      *this = x;
-    }
-
-    ~LNum() {
-      digits_.clear();
-    }
-    // ===========================/KANONICKA FORMA===============================
-    
-    // ============================MATICOVE OPERACE===============================
-    Matrix<T> inverse();                          // inverse <- via GE nebo LUP rozklad
-    // ============================MATICOVE OPERACE===============================
-  }
-  */
-  
   // soucet 2 matic
-  template<typename T>
-  Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y);
-
+  template<typename T> Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y);
   // rozdil 2 matic
-  template<typename T>
-  Matrix<T> operator-(const Matrix<T> & x, const Matrix<T> & y);
-
+  template<typename T> Matrix<T> operator-(const Matrix<T> & x, const Matrix<T> & y);
   // soucin 2 matic
   // ??? kontrola rozmeru + dle formule / Strassen ???
-  template<typename T>
-  Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y);
+  template<typename T> Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y);
 }
 
 #endif
