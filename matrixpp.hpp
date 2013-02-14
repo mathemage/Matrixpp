@@ -69,7 +69,7 @@ namespace mtrx {
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
-    Matrix mul_by_scal(const T & scalar);          // nasobeni skalarem
+    Matrix<T> mul_by_scal(const T & scalar);          // nasobeni skalarem
     Matrix transpose();                            // transposice
     Matrix gauss_elim();                           // Gaussova eliminace
     Matrix gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)

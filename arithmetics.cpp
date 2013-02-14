@@ -6,24 +6,14 @@
  the License, or (at your option) any later version.
                  http://www.gnu.org/licenses/
 ******************************************************************************/
-#include "matrixpp.hpp"
-using namespace mtrx;
+#include "all.hpp"
 
-/* 
-// soucet 2 matic
-template<typename T>
-Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y) {
-  try {
-    se
-  }
-}
-*/
-
-template<typename T>
-Matrix<T> Matrix<T>::mul_by_scal(const T & scalar) {          // nasobeni skalarem
-  Matrix<T> res = *this;
-  for (iterator it = res.begin(); it != res.end(); it++) {
-    *it = (*it) * scalar;
-  }
-  return res;
+int main(int argc, const char* argv[]) {
+  Matrix<int> mi;
+  Matrix<double> md;
+  cin >> mi >> md;
+  cout << mi << md;
+  cout << mi.mul_by_scal(-1) << endl << md.mul_by_scal(20) << endl;
+  
+  return 0;
 }
