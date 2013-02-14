@@ -1,19 +1,15 @@
 CC = g++
-#CFLAGS = -g -O2
 CFLAGS = -O2
-OBJECTS = matrixpp.o
+#OBJECTS = io.o arithmetics.o
 
-#Matrix++ : $(OBJECTS)
-#	$(CC) $(CFLAGS) $(OBJECTS) -o Matrix++ && rm $(OBJECTS)
+#io.exe : $(OBJECTS) io.o
+	#$(CC) $(CFLAGS) $(OBJECTS) io.o -o io.exe ; rm $(OBJECTS)
 
-io.exe : $(OBJECTS) io.o
-	$(CC) $(CFLAGS) $(OBJECTS) io.o -o io.exe ; rm $(OBJECTS)
-
-arithmetics.exe : $(OBJECTS) arithmetics.o
-	$(CC) $(CFLAGS) $(OBJECTS) arithmetics.o -o arithmetics.exe ; rm $(OBJECTS)
+%.exe : %.o
+	$(CC) $(CFLAGS) $? -o $@ ; rm $?
 
 %.o : %.cpp
-	ctags *.cpp *.hpp -R ; $(CC) $(CFLAGS) -c $<; echo $<
+	ctags *.cpp *.hpp -R ; $(CC) $(CFLAGS) -c $<
 
 clean:
 	rm $(OBJECTS)

@@ -12,8 +12,11 @@ int main(int argc, const char* argv[]) {
   Matrix<int> mi;
   Matrix<double> md;
   cin >> mi >> md;
-  cout << mi << md;
-  cout << mi.mul_by_scal(-1) << endl << md.mul_by_scal(20) << endl;
+  cout << "Vstupni matice: " << endl;
+  cout << mi << endl << endl << md << endl << endl;
+
+  cout << "Skalarni nasobek: " << endl;
+  cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl << endl;
   
   return 0;
 }

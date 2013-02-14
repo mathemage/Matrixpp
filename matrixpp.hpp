@@ -32,24 +32,7 @@ namespace mtrx {
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
     Matrix(unsigned h=0, unsigned w=0, T * data=0) : height(h), width(w), values(data) { } 
-    Matrix & operator=(const Matrix & m) {      // prirazeni
-      if (this != &m) {
-        height = m.get_height();
-        width = m.get_width();
-
-        // puvodni data
-        if (0 != m.values) {
-          delete [] values;
-        }
-        values = new T [height*width];
-
-        Matrix<T>::iterator it = this->begin();
-        for (Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
-          *it = *it_m;
-        }
-      }
-      return *this;
-    }
+    Matrix & operator=(const Matrix & m);       // prirazeni
     Matrix(const Matrix & x) { *this = x; }     // copy-constructor
     ~Matrix() { delete [] values; }
     // ===========================/KANONICKA FORMA===============================
@@ -119,4 +102,5 @@ namespace mtrx {
   template<typename T> Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y);
 }
 
+#include "matrixpp.tpp"         // implementacni soubor s definicemi
 #endif
