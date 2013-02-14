@@ -74,13 +74,20 @@ namespace mtrx {
     Matrix gauss_elim();                           // Gaussova eliminace
     Matrix gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)
     void LUP(Matrix & L, Matrix & U, Matrix & P);  // LUP dekomposice
-    void QR(Matrix & Q, Matrix & R);                  // QR dekomposice
+    void QR(Matrix & Q, Matrix & R);               // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
     
     // vypis matice
     friend ostream & operator<<(ostream & out, const Matrix & m) {
+      int i = 0;                                   // pocitadlo pro odradkovani
       for (typename Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++) {
-        out << *it_m << "\t";
+        out << *it_m;
+        // tabelator / novy radek
+        if (0 == ++i % m.get_width() && i != m.get_width() * m.get_height()) {
+          out << endl;
+        } else {
+          out << "\t";
+        }
       }
       return out;
     }
@@ -96,10 +103,8 @@ namespace mtrx {
         delete [] m.values;
       }
       m.values = new T [m.height*m.width];
-      cout << "allocated " << m.height*m.width << endl;
       for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
         in >> *it_m;
-        cout << "wrote " << *it_m << " @ " << it_m << endl;
       }
       return in;
     }
