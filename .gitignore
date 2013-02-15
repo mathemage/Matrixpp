@@ -14,3 +14,13 @@
 
 # Vim swap files
 *.swp
+
+# Executable files
+*.exe
+*.sh
+
+# Misc files
+*.test
+*.txt
+tags
+test/*

@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -O2
-#OBJECTS = io.o arithmetics.o
+OBJECTS = io.o arithmetics.o
 
 #io.exe : $(OBJECTS) io.o
 	#$(CC) $(CFLAGS) $(OBJECTS) io.o -o io.exe ; rm $(OBJECTS)
@@ -12,5 +12,4 @@ CFLAGS = -O2
 	ctags *.cpp *.hpp -R ; $(CC) $(CFLAGS) -c $<
 
 clean:
-	rm $(OBJECTS)
-	rm *.exe
+	rm $(OBJECTS) ; rm *.exe

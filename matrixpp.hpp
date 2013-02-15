@@ -33,8 +33,11 @@ namespace mtrx {
     // defaultni konstruktor - zabaleni dat do objektu tridy
     Matrix(unsigned h=0, unsigned w=0, T * data=0) : height(h), width(w), values(data) { } 
     Matrix & operator=(const Matrix & m);       // prirazeni
-    Matrix(const Matrix & x) { *this = x; }     // copy-constructor
-    ~Matrix() { delete [] values; }
+    Matrix(const Matrix & x) {                  // copy-constructor
+      values = 0;                               // kvuli dereferenci v delete - viz operator=
+      *this = x;
+    }
+    ~Matrix() { if (0 != values) delete [] values; }
     // ===========================/KANONICKA FORMA===============================
     
     // ============================NORMA: iteratory===============================

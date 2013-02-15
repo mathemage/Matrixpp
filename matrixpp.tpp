@@ -14,7 +14,8 @@ namespace mtrx {
       width = m.get_width();
 
       // puvodni data
-      if (0 != m.values) {
+      if (0 != values) {
+        cout << *this;
         delete [] values;
       }
       values = new T [height*width];
@@ -39,7 +40,7 @@ namespace mtrx {
 
   template<typename T>
   Matrix<T> Matrix<T>::mul_by_scal(const T & scalar) {          // nasobeni skalarem
-    Matrix<T> res = *this;
+    Matrix<T> res(*this);
     for (iterator it = res.begin(); it != res.end(); it++) {
       *it = (*it) * scalar;
     }
