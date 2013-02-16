@@ -6,6 +6,7 @@
  the License, or (at your option) any later version.
                  http://www.gnu.org/licenses/
 ******************************************************************************/
+/* HEADER FILE */
 #ifndef _MATRIXPP_H
 #define _MATRIXPP_H 1
 
@@ -13,6 +14,10 @@
 using namespace std;
 
 namespace mtrx {
+  template<typename T> class Matrix;
+  template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
+  template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
+
   // trida reprezentujici kontejner matic
   // ??? interface pro T ??? <- uzavrenost na +,-,* 
   // ??? via ABC (virtual operator+,-,*) - viz http://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
@@ -22,9 +27,6 @@ namespace mtrx {
     T * values;             // 1-D vyska * sirka
     //bool notAMatrix;      // spatne rozmery u soucinu matic (anebo vyjimka ???)
     unsigned height, width;      // nebo pres template<> ???
-    
-    // ============================NORMA: kontejnery===============================
-    // ===========================/NORMA: kontejnery===============================
   public:
     unsigned get_width() const {return width;}
     unsigned get_height() const {return height;}
@@ -55,7 +57,7 @@ namespace mtrx {
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
-    Matrix<T> mul_by_scal(const T & scalar);          // nasobeni skalarem
+    Matrix<T> mul_by_scal(const T & scalar);       // nasobeni skalarem
     Matrix transpose();                            // transposice
     Matrix gauss_elim();                           // Gaussova eliminace
     Matrix gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)
@@ -64,38 +66,10 @@ namespace mtrx {
     // ===========================/MATICOVE OPERACE===============================
     
     // vypis matice
-    friend ostream & operator<<(ostream & out, const Matrix & m) {
-      int i = 0;                                   // pocitadlo pro odradkovani
-      for (typename Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++) {
-        out << *it_m;
-        // tabelator / novy radek
-        if (0 == ++i % m.get_width() && i != m.get_width() * m.get_height()) {
-          out << endl;
-        } else {
-          out << "\t";
-        }
-      }
-      return out;
-    }
-    
-    // zadavani polozek matice zvnejsku
-    friend istream & operator>>(istream & in, Matrix & m) {
-      // rozmery
-      // ??? vyjimka pro kontrolu ???
-      in >> m.height >> m.width;
-
-      // polozky
-      if (0 != m.values) {
-        delete [] m.values;
-      }
-      m.values = new T [m.height*m.width];
-      for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
-        in >> *it_m;
-      }
-      return in;
-    }
+    friend ostream & operator<< <>(ostream & out, const Matrix<T> & m);
+    friend istream & operator>> <>(istream & in, Matrix<T> & m);
   };
-
+    
   // soucet 2 matic
   template<typename T> Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y);
   // rozdil 2 matic
