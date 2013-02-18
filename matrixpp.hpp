@@ -18,10 +18,22 @@ namespace mtrx {
   template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
   template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
 
+  // T musi podporovat operace:
+  // operator+
+  // operator-
+  // unarni operator-
+  // multiplikativni invers
+  template<typename T>
+  class Field {
+  private:
+    T _minus_one;
+  public:
+  }
+
   // trida reprezentujici kontejner matic
   // ??? interface pro T ??? <- uzavrenost na +,-,* 
   // ??? via ABC (virtual operator+,-,*) - viz http://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
-  template<typename T>
+  template<typename T, Field<T>>
   class Matrix {
   private:
     T * values;             // 1-D vyska * sirka
