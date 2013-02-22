@@ -29,13 +29,13 @@ namespace mtrx {
   istream & operator>>(istream & in, Matrix<T> & m) {
     // rozmery
     // ??? vyjimka pro kontrolu ???
-    in >> m.height >> m.width;
+    in >> m._height >> m._width;
 
     // polozky
-    if (0 != m.values) {
-      delete [] m.values;
+    if (0 != m._values) {
+      delete [] m._values;
     }
-    m.values = new T [m.height*m.width];
+    m._values = new T [m._height*m._width];
     for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
       in >> *it_m;
     }
@@ -45,15 +45,15 @@ namespace mtrx {
   template<typename T>
   Matrix<T> & Matrix<T>::operator=(const Matrix<T> & m) {      // prirazeni
     if (this != &m) {
-      height = m.get_height();
-      width = m.get_width();
+      _height = m.get_height();
+      _width = m.get_width();
 
       // puvodni data
-      if (0 != values) {
+      if (0 != _values) {
         cout << *this;
-        delete [] values;
+        delete [] _values;
       }
-      values = new T [height*width];
+      _values = new T [_height*_width];
 
       iterator it = this->begin();
       for (const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
@@ -81,4 +81,16 @@ namespace mtrx {
     }
     return res;
   }
+
+  // ====================PREDDEFINOVANE OPERACE PRO TELESA=====================
+  double plus_double(const double & lhs, const double & rhs) {
+    return lhs + rhs;
+  }
+
+  double times_double(const double & lhs, const double & rhs) {
+    return lhs * rhs;
+  }
+
+  Field<double> fld_reals(0, 1, plus_double, times_double);
+  // ===================/PREDDEFINOVANE OPERACE PRO TELESA=====================
 }

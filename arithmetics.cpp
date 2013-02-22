@@ -10,13 +10,23 @@
 
 int main(int argc, const char* argv[]) {
   Matrix<int> mi;
-  Matrix<double> md;
+  Matrix<> md;
   cin >> mi >> md;
   cout << "Vstupni matice: " << endl;
   cout << mi << endl << endl << md << endl << endl;
 
   cout << "Skalarni nasobek: " << endl;
   cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl << endl;
+
+  cout << "Field: " << endl;
+  double pi = 3.14;
+  double e = 2.71;
+  cout << fld_reals._zero << endl;
+  cout << fld_reals._one << endl;
+  cout << fld_reals._plus(e, pi) << endl;
+  cout << fld_reals._times(e, pi) << endl;
+  //cout << fld_reals._minus(e, pi) << endl;
+  //cout << fld_reals._minus(pi, e) << endl;
   
   return 0;
 }
