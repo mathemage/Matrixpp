@@ -82,15 +82,33 @@ namespace mtrx {
     return res;
   }
 
-  // ====================PREDDEFINOVANE OPERACE PRO TELESA=====================
-  double plus_double(const double & lhs, const double & rhs) {
-    return lhs + rhs;
+  // ==========================PREDDEFINOVANA TELESA===========================
+  // TELESO REALNYCH CISEL
+  double minus_double(const double & rhs) { return - rhs; }
+  double reciprocal_double(const double & rhs) { return 1 / rhs; }
+  double plus_double(const double & lhs, const double & rhs) { return lhs + rhs; }
+  double times_double(const double & lhs, const double & rhs) { return lhs * rhs; }
+  Field<double> fld_reals(0, 1, minus_double, reciprocal_double,  plus_double,
+      times_double);
+
+  // PRVOTELESO
+  // vysledek modula mezi hodnotami prvotelesa
+  int mod(const int & value, int modulo) { return (value % modulo + modulo) % modulo; }
+  template<int Order> int minus_pf(const int & rhs) { return mod(-rhs, Order); }
+  template<int Order> int reciprocal_pf(const int & rhs) { return 1 / rhs; }
+
+  template<int Order>
+  int plus_pf(const int & lhs, const int & rhs) {
+    return mod(mod(lhs,Order)+mod(rhs,Order), Order);
   }
 
-  double times_double(const double & lhs, const double & rhs) {
-    return lhs * rhs;
+  template<int Order>
+  int times_pf(const int & lhs, const int & rhs) {
+    return mod(mod(lhs,Order)*mod(rhs,Order), Order);
   }
 
-  Field<double> fld_reals(0, 1, plus_double, times_double);
-  // ===================/PREDDEFINOVANE OPERACE PRO TELESA=====================
+  // teleso zbytkovych trid radu "_order_"
+  const int _order_ = 5;
+  Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>, plus_pf<_order_>, times_pf<_order_>);
+  // =========================/PREDDEFINOVANA TELESA===========================
 }

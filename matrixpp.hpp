@@ -11,6 +11,8 @@
 #define _MATRIXPP_H 1
 
 #include<iostream>
+#include<exception>
+#include<cstdlib>
 using namespace std;
 
 namespace mtrx {
@@ -18,25 +20,44 @@ namespace mtrx {
   template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
   template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
 
+  // vyjimky
+  struct InverseOfNullException : public exception {
+    const char * what () const throw () {
+      return "Inversion of null element!";
+    }
+  };
+
   // interface pro T <- uzavrenost na +,-,* 
   // ??? via ABC (virtual operator+,-,*) - viz http://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
-  // T musi podporovat operace:
-  // unarni operator-
-  // multiplikativni invers
   template<typename T>
   struct Field {
     const T _zero;
     const T _one;
-    T (*_plus)(const T & lhs, const T & rhs);
-    T (*_times)(const T & lhs, const T & rhs);
-    /*
-    T _minus(const T & lhs, const T & rhs) {
-      return _plus(lhs, _times(_minus_one, rhs));
-    }  */
+    T (*_minus)(const T &);                   // unarni minus
+    T (*_reciprocal)(const T &);              // multiplikativni invers
+    T (*_plus)(const T &, const T &);
+    T (*_times)(const T &, const T &);
+    T subtract(const T & lhs, const T & rhs) {// binarni minus
+      return _plus(lhs, _minus(rhs));
+    }
+    T reciprocal(const T & rhs) {             // s kontrolou na nenulovost
+      try {
+        if (_zero == rhs) {
+          throw InverseOfNullException();
+        } else {
+          return _reciprocal(rhs);
+        }
+      }
+      catch (exception & e) {
+        cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+        exit(EXIT_FAILURE);
+      }
+    }
 
-    Field(T zero, T one, T (*plus)(const T &, const T &), T
-        (*times)(const T &, const T &)) :
-      _zero(zero), _one(one), _plus(plus), _times(times) { }
+    Field(T zero, T one, T (*minus)(const T &), T (*reciprocal)(const T &), T
+        (*plus)(const T &, const T &), T (*times)(const T &, const T &)) :
+      _zero(zero), _one(one), _minus(minus), _reciprocal(reciprocal),
+      _plus(plus), _times(times) { }
   };
 
   // trida reprezentujici kontejner matic
