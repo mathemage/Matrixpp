@@ -23,80 +23,6 @@ namespace mtrx {
     }
   }
 
-  // vypis matice
-  template<typename T>
-  ostream & operator<<(ostream & out, const Matrix<T> & m) {
-    int i = 0;                                   // pocitadlo pro odradkovani
-    for (typename Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++) {
-      out << *it_m;
-      // tabelator / novy radek
-      if (0 == ++i % m.get_width() && i != m.get_width() * m.get_height()) {
-        out << endl;
-      } else {
-        out << "\t";
-      }
-    }
-    return out;
-  }
-  
-  // zadavani polozek matice zvnejsku
-  template<typename T>
-  istream & operator>>(istream & in, Matrix<T> & m) {
-    // rozmery
-    // ??? vyjimka pro kontrolu ???
-    in >> m._height >> m._width;
-
-    // polozky
-    if (0 != m._values) {
-      delete [] m._values;
-    }
-    m._values = new T [m._height*m._width];
-    for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
-      in >> *it_m;
-    }
-    return in;
-  }
-
-  template<typename T>
-  Matrix<T> & Matrix<T>::operator=(const Matrix<T> & m) {      // prirazeni
-    if (this != &m) {
-      _height = m.get_height();
-      _width = m.get_width();
-
-      // puvodni data
-      if (0 != _values) {
-        cout << *this;
-        delete [] _values;
-      }
-      _values = new T [_height*_width];
-
-      iterator it = this->begin();
-      for (const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
-        *it = *it_m;
-      }
-    }
-    return *this;
-  }
-
-  /* 
-  // soucet 2 matic
-  template<typename T>
-  Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y) {
-    try {
-      se
-    }
-  }
-  */
-
-  template<typename T>
-  Matrix<T> Matrix<T>::mul_by_scal(const T & scalar) {          // nasobeni skalarem
-    Matrix<T> res(*this);
-    for (iterator it = res.begin(); it != res.end(); it++) {
-      *it = (*it) * scalar;
-    }
-    return res;
-  }
-
   // ==========================PREDDEFINOVANA TELESA===========================
   // TELESO REALNYCH CISEL
   double minus_double(const double & rhs) { return - rhs; }
@@ -145,4 +71,96 @@ namespace mtrx {
   const int _order_ = 5;
   Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>, plus_pf<_order_>, times_pf<_order_>);
   // =========================/PREDDEFINOVANA TELESA===========================
+
+  // defaultni konstruktor "Matrix" - zabaleni dat do objektu tridy
+  template<typename T>
+  Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * data=0) :
+    _fld(&fld), _height(h), _width(w), _values(data) { } 
+
+  // vypis matice
+  template<typename T>
+  ostream & operator<<(ostream & out, const Matrix<T> & m) {
+    int i = 0;                                   // pocitadlo pro odradkovani
+    for (typename Matrix<T>::const_iterator it_m = m.begin(); it_m != m.end(); it_m++) {
+      out << *it_m;
+      // tabelator / novy radek
+      if (0 == ++i % m.get_width() && i != m.get_width() * m.get_height()) {
+        out << endl;
+      } else {
+        out << "\t";
+      }
+    }
+    return out;
+  }
+  
+  // zadavani polozek matice zvnejsku
+  template<typename T>
+  istream & operator>>(istream & in, Matrix<T> & m) {
+    // rozmery
+    // ??? vyjimka pro kontrolu ???
+    in >> m._height >> m._width;
+
+    // polozky
+    if (0 != m._values) {
+      delete [] m._values;
+    }
+    m._values = new T [m._height*m._width];
+    for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
+      in >> *it_m;
+    }
+    return in;
+  }
+
+  template<typename T>
+  Matrix<T> & Matrix<T>::operator=(const Matrix<T> & m) {      // prirazeni
+    if (this != &m) {
+      _fld = m._fld;
+      _height = m.get_height();
+      _width = m.get_width();
+
+      // puvodni data
+      if (0 != _values) {
+        cout << *this;
+        delete [] _values;
+      }
+      _values = new T [_height*_width];
+
+      iterator it = this->begin();
+      for (const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
+        *it = *it_m;
+      }
+    }
+    return *this;
+  }
+
+  template<typename T>
+  Matrix<T> Matrix<T>::mul_by_scal(const T & scalar) {          // nasobeni skalarem
+    Matrix<T> res(*this);
+    for (iterator it = res.begin(); it != res.end(); it++) {
+      *it = _fld->_times(*it, scalar);
+    }
+    return res;
+  }
+
+  template<typename T>
+  Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y) {
+    try {
+      if (x.get_height() != y.get_height() || x.get_width() != y.get_width()) {
+        throw MismatchedDimException();
+      } else if (x._fld != y._fld) {
+        throw MismatchedFieldException();
+      }
+
+      Matrix<T> res(x);
+      typename Matrix<T>::const_iterator ity = y.cbegin();
+      for (typename Matrix<T>::iterator itx = res.begin(); itx != res.end(); itx++, ity++) {
+        *itx = res._fld->_plus(*itx, *ity);
+      }
+      return res;
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
+  }
 }

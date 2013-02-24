@@ -9,7 +9,7 @@
 #include "all.hpp"
 
 int main(int argc, const char* argv[]) {
-  Matrix<int> mi;
+  Matrix<int> mi(pf);
   Matrix<> md;
   cin >> mi >> md;
   cout << "Vstupni matice: " << endl;
@@ -17,24 +17,6 @@ int main(int argc, const char* argv[]) {
 
   cout << "Skalarni nasobek: " << endl;
   cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl << endl;
-
-  cout << "Field of reals: " << endl;
-  double pi = 3.14;
-  double e = 2.71;
-  cout << fld_reals._zero << endl;
-  cout << fld_reals._one << endl;
-  cout << fld_reals._plus(e, pi) << endl;
-  cout << fld_reals._times(e, pi) << endl;
-  cout << fld_reals._minus(e) << endl;
-  cout << fld_reals._minus(pi) << endl;
-  cout << fld_reals.subtract(e, pi) << endl;
-  cout << fld_reals._rec(pi) << endl;
-  //cout << fld_reals.reciprocal(0) << endl;
-  cout << "Prime field of order " << _order_ << ": " << endl;
-  cout << pf._minus(-79) << endl;
-  cout << pf._plus(-79, 132) << endl;
-  cout << pf._times(-78, 134) << endl;
-  cout << pf._rec(29) << endl;
   
   return 0;
 }

@@ -20,12 +20,25 @@ namespace mtrx {
   template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
   template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
 
-  // vyjimky
+  // =================================vyjimky===================================
   struct InverseOfNullException : public exception {
     const char * what () const throw () {
       return "Inversion of null element!";
     }
   };
+
+  struct MismatchedDimException : public exception {
+    const char * what () const throw () {
+      return "Mismatched dimensions!";
+    }
+  };
+
+  struct MismatchedFieldException : public exception {
+    const char * what () const throw () {
+      return "Mismatched fields of matrices!";
+    }
+  };
+  // =================================vyjimky===================================
 
   // interface pro T <- uzavrenost na +,-,* 
   // ??? via ABC (virtual operator+,-,*) - viz http://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
@@ -54,19 +67,21 @@ namespace mtrx {
   template<typename T=double>
   class Matrix {
   private:
+    unsigned _height, _width;
     T * _values;                                // 1-D vyska * sirka
-    unsigned _height, _width;                   // nebo pres template<> ???
   public:
+    const Field<T> * _fld;                      // teleso, nad nimz se operuje
+
     unsigned get_width() const {return _width;}
     unsigned get_height() const {return _height;}
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
-    Matrix(unsigned h=0, unsigned w=0, T * data=0) : _height(h), _width(w), _values(data) { } 
+    Matrix(const Field<T> & fld, unsigned h, unsigned w, T * data);
     Matrix & operator=(const Matrix & m);       // prirazeni
-    Matrix(const Matrix & x) {                  // copy-constructor
+    Matrix(const Matrix & m) {                  // copy-constructor
       _values = 0;                              // kvuli dereferenci v delete - viz operator=
-      *this = x;
+      *this = m;
     }
     ~Matrix() { if (0 != _values) delete [] _values; }
     // ===========================/KANONICKA FORMA===============================
@@ -74,7 +89,7 @@ namespace mtrx {
     // ============================NORMA: iteratory===============================
     // iteratory z pointeru
     typedef T * iterator;
-    typedef const T * const_iterator;     // ukazatel na konstantni data
+    typedef const T * const_iterator;           // ukazatel na konstantni data
     // ===========================/NORMA: iteratory===============================
 
     // ============================NORMA: kontejnery===============================
@@ -83,10 +98,12 @@ namespace mtrx {
     const_iterator begin() const { return _values; }
     iterator end() { return _values + _height * _width; }
     const_iterator end() const { return _values + _height * _width; }
+    const_iterator cbegin() const { return _values; }
+    const_iterator cend() const { return _values + _height * _width; }
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
-    Matrix<T> mul_by_scal(const T & scalar);       // nasobeni skalarem
+    Matrix mul_by_scal(const T & scalar);       // nasobeni skalarem
     Matrix transpose();                            // transposice
     Matrix gauss_elim();                           // Gaussova eliminace
     Matrix gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)
