@@ -8,6 +8,21 @@
 ******************************************************************************/
 /* IMPLEMENTATION FILE */
 namespace mtrx {
+  template<typename T>
+  T Field<T>::_rec(const T & rhs) {             // s kontrolou na nenulovost
+    try {
+      if (_zero == rhs) {
+        throw InverseOfNullException();
+      } else {
+        return _reciprocal(rhs);
+      }
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+
   // vypis matice
   template<typename T>
   ostream & operator<<(ostream & out, const Matrix<T> & m) {
@@ -95,7 +110,26 @@ namespace mtrx {
   // vysledek modula mezi hodnotami prvotelesa
   int mod(const int & value, int modulo) { return (value % modulo + modulo) % modulo; }
   template<int Order> int minus_pf(const int & rhs) { return mod(-rhs, Order); }
-  template<int Order> int reciprocal_pf(const int & rhs) { return 1 / rhs; }
+
+  template<int Order>
+  int reciprocal_pf(const int & rhs) {     // rozsireny Eukliduv algoritmus s Bezoutovy koeficienty
+    int divisor = mod(rhs, Order);
+    if (0 == divisor) {
+      throw InverseOfNullException();
+    }
+    int dividend = Order;
+    int remainder;
+    int bezout1 = 0; int bezout2 = 1;      // predposledni a posledni Bezoutuv koeficient
+
+    while (divisor > 1) {
+      bezout1 = bezout1 - (dividend / divisor) * bezout2;
+      swap(bezout1, bezout2);
+      remainder = dividend % divisor;
+      dividend = divisor;
+      divisor = remainder;
+    }
+    return mod(bezout2, Order);
+  }
 
   template<int Order>
   int plus_pf(const int & lhs, const int & rhs) {

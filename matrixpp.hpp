@@ -37,27 +37,16 @@ namespace mtrx {
     T (*_reciprocal)(const T &);              // multiplikativni invers
     T (*_plus)(const T &, const T &);
     T (*_times)(const T &, const T &);
-    T subtract(const T & lhs, const T & rhs) {// binarni minus
-      return _plus(lhs, _minus(rhs));
-    }
-    T reciprocal(const T & rhs) {             // s kontrolou na nenulovost
-      try {
-        if (_zero == rhs) {
-          throw InverseOfNullException();
-        } else {
-          return _reciprocal(rhs);
-        }
-      }
-      catch (exception & e) {
-        cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-        exit(EXIT_FAILURE);
-      }
-    }
+    T _rec(const T & rhs);                    // multiplikatvni invers
 
     Field(T zero, T one, T (*minus)(const T &), T (*reciprocal)(const T &), T
         (*plus)(const T &, const T &), T (*times)(const T &, const T &)) :
       _zero(zero), _one(one), _minus(minus), _reciprocal(reciprocal),
       _plus(plus), _times(times) { }
+
+    T subtract(const T & lhs, const T & rhs) {// binarni minus
+      return _plus(lhs, _minus(rhs));
+    }
   };
 
   // trida reprezentujici kontejner matic
