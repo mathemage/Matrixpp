@@ -17,6 +17,27 @@ int main(int argc, const char* argv[]) {
 
   cout << "Skalarni nasobek: " << endl;
   cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl << endl;
+
+  cout << "Soucet matic: " << endl;
+  Matrix<int> mi2(pf);
+  cin >> mi2;
+  cout << "mi:\n" << mi << endl;
+  cout << "mi2:\n" << mi2 << endl;
+  cout << "mi + mi2:\n" << mi + mi2 << endl;
+  cout << "mi - mi2:\n" << mi - mi2 << endl;
+
+  cout << endl;
+
+  Matrix<> md2;
+  cin >> md2;
+  cout << "md:\n" << md << endl;
+  cout << "md2:\n" << md2 << endl;
+  cout << "md + md2:\n" << md + md2 << endl;
+  cout << "md - md2:\n" << md - md2 << endl;
+
+  cout << "Soucin matic: " << endl;
+  cin >> md >> md2;
+  cout << "md * md2:\n" << md * md2 << endl;
   
   return 0;
 }

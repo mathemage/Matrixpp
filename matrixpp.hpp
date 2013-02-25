@@ -103,12 +103,12 @@ namespace mtrx {
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
-    Matrix mul_by_scal(const T & scalar);       // nasobeni skalarem
-    Matrix transpose();                            // transposice
-    Matrix gauss_elim();                           // Gaussova eliminace
-    Matrix gauss_jord_elim();                      // Gaussova-Jordanova eliminace O(n^3)
-    void LUP(Matrix & L, Matrix & U, Matrix & P);  // LUP dekomposice
-    void QR(Matrix & Q, Matrix & R);               // QR dekomposice
+    Matrix mul_by_scal(const T & scalar) const;          // nasobeni skalarem
+    Matrix transpose() const;                            // transposice
+    Matrix gauss_elim() const;                           // Gaussova eliminace
+    Matrix gauss_jord_elim() const;                      // Gaussova-Jordanova eliminace O(n^3)
+    void LUP(Matrix & L, Matrix & U, Matrix & P) const;  // LUP dekomposice
+    void QR(Matrix & Q, Matrix & R) const;               // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
     
     // vypis matice

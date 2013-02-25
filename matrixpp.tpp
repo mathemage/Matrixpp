@@ -134,7 +134,7 @@ namespace mtrx {
   }
 
   template<typename T>
-  Matrix<T> Matrix<T>::mul_by_scal(const T & scalar) {          // nasobeni skalarem
+  Matrix<T> Matrix<T>::mul_by_scal(const T & scalar) const {          // nasobeni skalarem
     Matrix<T> res(*this);
     for (iterator it = res.begin(); it != res.end(); it++) {
       *it = _fld->_times(*it, scalar);
@@ -156,6 +156,38 @@ namespace mtrx {
       for (typename Matrix<T>::iterator itx = res.begin(); itx != res.end(); itx++, ity++) {
         *itx = res._fld->_plus(*itx, *ity);
       }
+      return res;
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  template<typename T>
+  Matrix<T> operator-(const Matrix<T> & x, const Matrix<T> & y) {
+    const T minus_one = y._fld->_minus(y._fld->_one);
+    return x + y.mul_by_scal(minus_one);
+  }
+
+  template<typename T>
+  Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y) {
+    int x_h = x.get_height();
+    int y_w = y.get_width();
+    try {
+      if (y.get_height() != x.get_width()) {
+        throw MismatchedDimException();
+      } else if (x._fld != y._fld) {
+        throw MismatchedFieldException();
+      }
+
+      T * data = new T [x_h*y_w];
+      Matrix<T> res(*x._fld, x_h, y_w, data);
+      /*
+      typename Matrix<T>::const_iterator ity = y.cbegin();
+      for (typename Matrix<T>::iterator itx = res.begin(); itx != res.end(); itx++, ity++) {
+        *itx = res._fld->_plus(*itx, *ity);
+      }  */
       return res;
     }
     catch (exception & e) {
