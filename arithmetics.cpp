@@ -11,16 +11,20 @@
 int main(int argc, const char* argv[]) {
   Matrix<int> mi(pf);
   Matrix<> md;
+  cout << "md is " << (md.empty() ? "empty" : "non-void") << endl;
   cin >> mi >> md;
-  cout << "Vstupni matice: " << endl;
-  cout << mi << endl << endl << md << endl << endl;
+  cout << "mi:\n" << mi << "\nmd:\n" << md << endl;
+  cout << "md is " << (md.empty() ? "empty" : "non-void") << endl;
 
   cout << "Skalarni nasobek: " << endl;
-  cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl << endl;
+  cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl;
 
   cout << "Soucet matic: " << endl;
   Matrix<int> mi2(pf);
   cin >> mi2;
+  cout << "mi:\n" << mi << endl;
+  cout << "mi2:\n" << mi2 << endl;
+  swap(mi2, mi);
   cout << "mi:\n" << mi << endl;
   cout << "mi2:\n" << mi2 << endl;
   cout << "mi + mi2:\n" << mi + mi2 << endl;
@@ -41,14 +45,24 @@ int main(int argc, const char* argv[]) {
   cout << "md * md2:\n" << md * md2 << endl;
   */
 
-  cout << "mi:\n" << mi << endl;
-  cin >> mi2;
-  cout << "shift:\n" << mi2 << endl;
-  mi2 = mi + mi2;
-  cout << "mi2:\n" << mi2 << endl;
   cout << "Rovnost matic: " << endl;
-  cout << ((md == md2) ? "md == md2" : "md != md2") << endl;
+  cin >> mi2;
+  mi2 = mi + mi2;
+  cout << ((md != md2) ? "md != md2" : "md == md2") << endl;
   cout << ((mi == mi2) ? "mi == mi2" : "mi != mi2") << endl;
+
+  cout << "Velikost matic: " << endl;
+  cout << "mi: " << mi.size() << endl;
+  cout << "md: " << md.max_size() << endl;
+
+  cout << "Iteratory matic: " << endl;
+  int m = 3;
+  Matrix<int>::const_iterator iti = mi.begin();
+  cout << "mi:\n" << mi << endl;
+  cout << "mi[" << m << "]: " << iti[m] << endl;
+  cout << "mi[" << m-3 << "]: " << iti[m-3] << endl;
+  cout << "mi[" << m << "] >= mi[" << m-3 << "] is " << (iti[m] >= iti[m-3] ? "true" : "false") << endl;
+  //cout << "md: " << md.max_size() << endl;
   
   return 0;
 }

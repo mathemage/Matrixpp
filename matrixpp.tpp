@@ -50,7 +50,7 @@ namespace mtrx {
 
     while (divisor > 1) {
       bezout1 = bezout1 - (dividend / divisor) * bezout2;
-      swap(bezout1, bezout2);
+      std::swap(bezout1, bezout2);
       remainder = dividend % divisor;
       dividend = divisor;
       divisor = remainder;
@@ -97,6 +97,15 @@ namespace mtrx {
     } else {
       return false;
     }
+  }
+
+  // prohozeni dvou matic
+  template<typename T>
+  void Matrix<T>::swap(Matrix<T> & rhs) {
+    std::swap(this->_fld, rhs._fld);
+    std::swap(this->_height, rhs._height);
+    std::swap(this->_width, rhs._width);
+    std::swap(this->_values, rhs._values);
   }
 
   // vypis matice

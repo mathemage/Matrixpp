@@ -109,6 +109,11 @@ namespace mtrx {
     const_iterator cbegin() const { return const_cast<Matrix const &>(*this).begin(); }
     const_iterator cend() const { return const_cast<Matrix const &>(*this).end(); }
     bool operator==(const Matrix & rhs) const;
+    bool operator!=(const Matrix & rhs) const { return !(*this == rhs); }
+    void swap(Matrix & rhs);
+    size_type size() { return end() - begin(); }
+    size_type max_size() { return size(); }
+    bool empty() { return begin() == end(); }
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
@@ -125,11 +130,13 @@ namespace mtrx {
     friend istream & operator>> <>(istream & in, Matrix<T> & m);
   };
     
-  // soucet 2 matic
+  // prohozeni dvou matic
+  template<typename T> void swap(Matrix<T> & lhs, Matrix<T> & rhs) { lhs.swap(rhs); }
+  // soucet dvou matic
   template<typename T> Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y);
-  // rozdil 2 matic
+  // rozdil dvou matic
   template<typename T> Matrix<T> operator-(const Matrix<T> & x, const Matrix<T> & y);
-  // soucin 2 matic
+  // soucin dvou matic
   // ??? kontrola rozmeru + dle formule / Strassen ???
   template<typename T> Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y);
 }
