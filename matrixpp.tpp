@@ -80,8 +80,8 @@ namespace mtrx {
 
   // defaultni konstruktor "Matrix" - zabaleni dat do objektu tridy
   template<typename T>
-  Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * data=0) :
-    _fld(&fld), _height(h), _width(w), _values(data) { } 
+  Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * values=0) :
+    _fld(&fld), _height(h), _width(w), _values(values) { } 
 
   // rovnost matic
   template<typename T>
@@ -149,7 +149,7 @@ namespace mtrx {
       _height = m.get_height();
       _width = m.get_width();
 
-      // puvodni data
+      // puvodni values
       if (0 != _values) {
         delete [] _values;
       }
@@ -168,6 +168,19 @@ namespace mtrx {
     Matrix<T> res(*this);
     for (iterator it = res.begin(); it != res.end(); it++) {
       *it = _fld->_times(*it, scalar);
+    }
+    return res;
+  }
+
+  template<typename T>
+  Matrix<T> Matrix<T>::transpose() const {                            // transposice matice
+    Matrix<T> res(*_fld, _width, _height);
+    res._values = new T [_width*_height];
+    for (int i = 0; i < _height; i++) {
+      for (int j = 0; j < _width; j++) {
+        //cout << "[" << i << " " << j << "] = " << at(i,j) << " -> pos " << j*_height+i << endl;
+        res._values[j*_height+i] = at(i,j);
+      }
     }
     return res;
   }
@@ -213,11 +226,15 @@ namespace mtrx {
 
       T * data = new T [x_h*y_w];
       Matrix<T> res(*x._fld, x_h, y_w, data);
-      /*
-      typename Matrix<T>::const_iterator ity = y.cbegin();
-      for (typename Matrix<T>::iterator itx = res.begin(); itx != res.end(); itx++, ity++) {
-        *itx = res._fld->_plus(*itx, *ity);
-      }  */
+      typename Matrix<T>::iterator it = res.begin(); 
+      for (int i = 0; i < x_h; i++) {
+        for (int j = 0; j < y_w; j++, it++) {
+          *it = res._fld->_zero;
+          for (int k = 0; k < x.get_width(); k++) {
+            *it = res._fld->_plus(*it, res._fld->_times(x.at(i, k), y.at(k, j)));
+          }
+        }
+      }
       return res;
     }
     catch (exception & e) {

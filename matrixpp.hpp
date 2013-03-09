@@ -41,6 +41,12 @@ namespace mtrx {
       return "Mismatched fields of matrices!";
     }
   };
+
+  struct OutOfRangeException : public exception {
+    const char * what () const throw () {
+      return "Indices out of range!";
+    }
+  };
   // =================================vyjimky===================================
 
   // INTERFACE PRO T <- uzavrenost na +,-,* 
@@ -76,12 +82,26 @@ namespace mtrx {
   public:
     const Field<T> * _fld;                      // teleso, nad nimz se operuje
 
-    unsigned get_width() const {return _width;}
-    unsigned get_height() const {return _height;}
+    unsigned get_width() const { return _width; }
+    unsigned get_height() const { return _height; }
+    // prvek s indexy (i,j), zacatek od (0,0)
+    T at(unsigned i, unsigned j) const {
+      try {
+        if (i >= _height || j >= _width) {
+          throw OutOfRangeException();
+        } else {
+          return _values[i*_width+j];
+        }
+      }
+      catch (exception & e) {
+        cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+        exit(EXIT_FAILURE);
+      }
+    }
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
-    Matrix(const Field<T> & fld, unsigned h, unsigned w, T * data);
+    Matrix(const Field<T> & fld, unsigned h, unsigned w, T * values);
     Matrix & operator=(const Matrix & m);       // prirazeni
     Matrix(const Matrix & m) {                  // copy-constructor
       _values = 0;                              // kvuli dereferenci v delete - viz operator=
@@ -102,8 +122,8 @@ namespace mtrx {
     typedef const T & const_reference;
     typedef ptrdiff_t difference_type;
     typedef difference_type size_type;
-    iterator begin() { return _values; }
     const_iterator begin() const { return _values; }
+    iterator begin() { return _values; }
     iterator end() { return _values + _height * _width; }
     const_iterator end() const { return _values + _height * _width; }
     const_iterator cbegin() const { return const_cast<Matrix const &>(*this).begin(); }

@@ -39,12 +39,6 @@ int main(int argc, const char* argv[]) {
   cout << "md + md2:\n" << md + md2 << endl;
   cout << "md - md2:\n" << md - md2 << endl;
 
-  /*
-  cout << "Soucin matic: " << endl;
-  cin >> md >> md2;
-  cout << "md * md2:\n" << md * md2 << endl;
-  */
-
   cout << "Rovnost matic: " << endl;
   cin >> mi2;
   mi2 = mi + mi2;
@@ -62,7 +56,10 @@ int main(int argc, const char* argv[]) {
   cout << "mi[" << m << "]: " << iti[m] << endl;
   cout << "mi[" << m-3 << "]: " << iti[m-3] << endl;
   cout << "mi[" << m << "] >= mi[" << m-3 << "] is " << (iti[m] >= iti[m-3] ? "true" : "false") << endl;
-  //cout << "md: " << md.max_size() << endl;
+
+  cout << "Transposice: " << endl;
+  cout << "mi2:\n" << mi2 << endl;
+  cout << "mi2^T:\n" << mi2.transpose() << endl;
   
   return 0;
 }
