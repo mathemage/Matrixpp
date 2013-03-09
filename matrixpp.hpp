@@ -13,12 +13,15 @@
 #include<iostream>
 #include<exception>
 #include<cstdlib>
+#include<iterator>
 using namespace std;
 
 namespace mtrx {
+  // =================================forward declaration=======================
   template<typename T> class Matrix;
   template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
   template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
+  // ================================/forward declaration=======================
 
   // =================================vyjimky===================================
   struct InverseOfNullException : public exception {
@@ -40,8 +43,7 @@ namespace mtrx {
   };
   // =================================vyjimky===================================
 
-  // interface pro T <- uzavrenost na +,-,* 
-  // ??? via ABC (virtual operator+,-,*) - viz http://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
+  // INTERFACE PRO T <- uzavrenost na +,-,* 
   template<typename T>
   struct Field {
     const T _zero;
@@ -50,20 +52,22 @@ namespace mtrx {
     T (*_reciprocal)(const T &);              // multiplikativni invers
     T (*_plus)(const T &, const T &);
     T (*_times)(const T &, const T &);
-    T _rec(const T & rhs);                    // multiplikatvni invers
+    bool (*_equals)(const T &, const T &);    // rovnost prvku telesa
+    T _rec(const T & rhs);                    // multiplikatvni invers s kontrolou na nenulovost
 
+    // konstruktor
     Field(T zero, T one, T (*minus)(const T &), T (*reciprocal)(const T &), T
-        (*plus)(const T &, const T &), T (*times)(const T &, const T &)) :
+        (*plus)(const T &, const T &), T (*times)(const T &, const T &), bool
+        equals(const T &, const T &)) :
       _zero(zero), _one(one), _minus(minus), _reciprocal(reciprocal),
-      _plus(plus), _times(times) { }
+      _plus(plus), _times(times), _equals(equals) { }
 
     T subtract(const T & lhs, const T & rhs) {// binarni minus
       return _plus(lhs, _minus(rhs));
     }
   };
 
-  // trida reprezentujici kontejner matic
-  //template<typename T=double, Field<T>=fld_reals>
+  // KONTEJNER MATIC
   template<typename T=double>
   class Matrix {
   private:
@@ -87,19 +91,24 @@ namespace mtrx {
     // ===========================/KANONICKA FORMA===============================
     
     // ============================NORMA: iteratory===============================
-    // iteratory z pointeru
+    // iteratory z pointeru (bidirectional)
     typedef T * iterator;
     typedef const T * const_iterator;           // ukazatel na konstantni data
     // ===========================/NORMA: iteratory===============================
 
     // ============================NORMA: kontejnery===============================
     typedef T value_type;
+    typedef T & reference;
+    typedef const T & const_reference;
+    typedef ptrdiff_t difference_type;
+    typedef difference_type size_type;
     iterator begin() { return _values; }
     const_iterator begin() const { return _values; }
     iterator end() { return _values + _height * _width; }
     const_iterator end() const { return _values + _height * _width; }
-    const_iterator cbegin() const { return _values; }
-    const_iterator cend() const { return _values + _height * _width; }
+    const_iterator cbegin() const { return const_cast<Matrix const &>(*this).begin(); }
+    const_iterator cend() const { return const_cast<Matrix const &>(*this).end(); }
+    bool operator==(const Matrix & rhs) const;
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================

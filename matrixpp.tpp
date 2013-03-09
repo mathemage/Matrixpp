@@ -29,8 +29,9 @@ namespace mtrx {
   double reciprocal_double(const double & rhs) { return 1 / rhs; }
   double plus_double(const double & lhs, const double & rhs) { return lhs + rhs; }
   double times_double(const double & lhs, const double & rhs) { return lhs * rhs; }
+  bool equals_double(const double & lhs, const double & rhs) { return lhs == rhs; }
   Field<double> fld_reals(0, 1, minus_double, reciprocal_double,  plus_double,
-      times_double);
+      times_double, equals_double);
 
   // PRVOTELESO
   // vysledek modula mezi hodnotami prvotelesa
@@ -67,15 +68,36 @@ namespace mtrx {
     return mod(mod(lhs,Order)*mod(rhs,Order), Order);
   }
 
+  template<int Order>
+  bool equals_pf(const int & lhs, const int & rhs) {
+    return (lhs - rhs) % Order == 0;
+  }
+
   // teleso zbytkovych trid radu "_order_"
   const int _order_ = 5;
-  Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>, plus_pf<_order_>, times_pf<_order_>);
+  Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>, plus_pf<_order_>, times_pf<_order_>, equals_pf<_order_>);
   // =========================/PREDDEFINOVANA TELESA===========================
 
   // defaultni konstruktor "Matrix" - zabaleni dat do objektu tridy
   template<typename T>
   Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * data=0) :
     _fld(&fld), _height(h), _width(w), _values(data) { } 
+
+  // rovnost matic
+  template<typename T>
+  bool Matrix<T>::operator==(const Matrix<T> & rhs) const {
+    if (_height == rhs.get_height() && _width == rhs.get_width() && _fld == rhs._fld) {
+      typename Matrix<T>::const_iterator it_r = rhs.cbegin();
+      for (typename Matrix<T>::const_iterator it_m = cbegin(); it_m != cend(); it_m++, it_r++) {
+        if (!_fld->_equals(*it_r, *it_m)) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   // vypis matice
   template<typename T>
@@ -120,7 +142,6 @@ namespace mtrx {
 
       // puvodni data
       if (0 != _values) {
-        cout << *this;
         delete [] _values;
       }
       _values = new T [_height*_width];

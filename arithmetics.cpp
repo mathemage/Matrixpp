@@ -35,9 +35,20 @@ int main(int argc, const char* argv[]) {
   cout << "md + md2:\n" << md + md2 << endl;
   cout << "md - md2:\n" << md - md2 << endl;
 
+  /*
   cout << "Soucin matic: " << endl;
   cin >> md >> md2;
   cout << "md * md2:\n" << md * md2 << endl;
+  */
+
+  cout << "mi:\n" << mi << endl;
+  cin >> mi2;
+  cout << "shift:\n" << mi2 << endl;
+  mi2 = mi + mi2;
+  cout << "mi2:\n" << mi2 << endl;
+  cout << "Rovnost matic: " << endl;
+  cout << ((md == md2) ? "md == md2" : "md != md2") << endl;
+  cout << ((mi == mi2) ? "mi == mi2" : "mi != mi2") << endl;
   
   return 0;
 }
