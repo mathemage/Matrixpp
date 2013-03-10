@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import random
 (h,w) = (7,5)
 (d,u) = (-50,50)

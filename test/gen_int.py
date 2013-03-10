@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import random
 (h,w) = (10,11)
 (d,u) = (-1000,1000)
