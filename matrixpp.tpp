@@ -32,6 +32,8 @@ namespace mtrx {
   bool equals_double(const double & lhs, const double & rhs) { return lhs == rhs; }
   Field<double> fld_reals(0, 1, minus_double, reciprocal_double,  plus_double,
       times_double, equals_double);
+  Field<double> fld_reals2(0, 1, minus_double, reciprocal_double,  plus_double,
+      times_double, equals_double);
 
   // PRVOTELESO
   // vysledek modula mezi hodnotami prvotelesa
@@ -144,23 +146,32 @@ namespace mtrx {
 
   template<typename T>
   Matrix<T> & Matrix<T>::operator=(const Matrix<T> & m) {      // prirazeni
-    if (this != &m) {
-      _fld = m._fld;
-      _height = m.get_height();
-      _width = m.get_width();
+    try {
+      if (this != &m) {
+        if (_fld != m._fld) {                                  // povoleno jen nad identickym telesem
+          throw MismatchedFieldException();
+        }
+        _height = m.get_height();
+        _width = m.get_width();
 
-      // puvodni values
-      if (0 != _values) {
-        delete [] _values;
-      }
-      _values = new T [_height*_width];
+        // puvodni values
+        if (0 != _values) {
+          delete [] _values;
+        }
+        _values = new T [_height*_width];
 
-      iterator it = this->begin();
-      for (const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
-        *it = *it_m;
+        iterator it = this->begin();
+        for (const_iterator it_m = m.begin(); it_m != m.end(); it_m++, it++) {
+          *it = *it_m;
+        }
       }
+
+      return *this;
     }
-    return *this;
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   template<typename T>

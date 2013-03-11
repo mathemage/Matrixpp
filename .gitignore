@@ -23,5 +23,5 @@
 *.test
 *.txt
 tags
-test/*
+*.test
 TODO

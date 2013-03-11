@@ -49,6 +49,7 @@ namespace mtrx {
   };
   // =================================vyjimky===================================
 
+  // =================================interface===================================
   // INTERFACE PRO T <- uzavrenost na +,-,* 
   template<typename T>
   struct Field {
@@ -72,15 +73,17 @@ namespace mtrx {
       return _plus(lhs, _minus(rhs));
     }
   };
+  // ================================/interface===================================
 
+  // =================================tridy matic=================================
   // KONTEJNER MATIC
   template<typename T=double>
   class Matrix {
-  private:
+  protected:
     unsigned _height, _width;
     T * _values;                                // 1-D vyska * sirka
   public:
-    const Field<T> * _fld;                      // teleso, nad nimz se operuje
+    const Field<T> * const _fld;                // teleso, nad nimz se operuje (const nezmenitelne)
 
     unsigned get_width() const { return _width; }
     unsigned get_height() const { return _height; }
@@ -103,7 +106,7 @@ namespace mtrx {
     // defaultni konstruktor - zabaleni dat do objektu tridy
     Matrix(const Field<T> & fld, unsigned h, unsigned w, T * values);
     Matrix & operator=(const Matrix & m);       // prirazeni
-    Matrix(const Matrix & m) {                  // copy-constructor
+    Matrix(const Matrix & m) : _fld(m._fld) {   // copy-constructor
       _values = 0;                              // kvuli dereferenci v delete - viz operator=
       *this = m;
     }
@@ -159,6 +162,12 @@ namespace mtrx {
   // soucin dvou matic
   // ??? kontrola rozmeru + dle formule / Strassen ???
   template<typename T> Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y);
+
+  // VEKTOR Z MATICE
+  template<typename T=double>
+  class Vect : public Matrix<T> {
+  };
+  // ================================/tridy matic=================================
 }
 
 #include "matrixpp.tpp"         // implementacni soubor s definicemi
