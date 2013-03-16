@@ -47,6 +47,18 @@ namespace mtrx {
       return "Indices out of range!";
     }
   };
+
+  struct NotAVectorException : public exception {
+    const char * what () const throw () {
+      return "Not a vector (viz dimensions)!";
+    }
+  };
+
+  struct NotASqrMtrxException : public exception {
+    const char * what () const throw () {
+      return "Not a square matrix (viz dimensions)!";
+    }
+  };
   // =================================vyjimky===================================
 
   // =================================interface===================================
@@ -101,6 +113,7 @@ namespace mtrx {
         exit(EXIT_FAILURE);
       }
     }
+    bool is_valid() { return true; }
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
@@ -166,7 +179,58 @@ namespace mtrx {
   // VEKTOR Z MATICE
   template<typename T=double>
   class Vect : public Matrix<T> {
+  private:
+    // non-dependent names -> dependent names
+    using Matrix<T>::_height;
+    using Matrix<T>::_width;
+    using Matrix<T>::_values;
+    using Matrix<T>::_fld;
+  public:
+    using Matrix<T>::begin;
+    using Matrix<T>::is_valid;
+
+    // ============================KANONICKA FORMA===============================
+    // defaultni konstruktor - implicitni sirka 1
+    Vect(const Field<T> & fld, unsigned h, T * values);
+    Vect & operator=(const Vect & v);           // prirazeni
+    Vect(const Vect & v) : Matrix<T>(v) { }     // copy-constructor
+    // ===========================/KANONICKA FORMA===============================
+    
+    operator Matrix<T>() {                      // conversion operator
+      Matrix<T> m(_fld, _height, 1, _values);
+      return m;
+    }
+
+    Vect(const Matrix<T> & m);                  // conversion constructor
   };
+
+  // CTVERCOVE MATICE
+  template<typename T=double>
+  class SqrMtrx : public Matrix<T> {
+  private:
+    // non-dependent names -> dependent names
+    using Matrix<T>::_height;
+    using Matrix<T>::_width;
+    using Matrix<T>::_values;
+    using Matrix<T>::_fld;
+  public:
+    using Matrix<T>::is_valid;
+
+    // ============================KANONICKA FORMA===============================
+    // defaultni konstruktor - implicitne stejne rozmery
+    SqrMtrx(const Field<T> & fld, unsigned dim, T * values);
+    SqrMtrx & operator=(const SqrMtrx & r);           // prirazeni
+    SqrMtrx(const SqrMtrx & v) : Matrix<T>(v) { }     // copy-constructor
+    // ===========================/KANONICKA FORMA===============================
+    
+    operator Matrix<T>() {                         // conversion operator
+      Matrix<T> m(_fld, _height, _height, _values);
+      return m;
+    }
+
+    SqrMtrx(const Matrix<T> & m);                  // conversion constructor
+  };
+
   // ================================/tridy matic=================================
 }
 

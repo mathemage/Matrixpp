@@ -16,7 +16,7 @@ int main(int argc, const char* argv[]) {
     cout << args[i] << endl;
   }
 
-  Matrix<int> m;
+  Matrix<int> m(pf);
   cin >> m;
   cout << m << endl;
   

@@ -9,7 +9,6 @@
 #include "all.hpp"
 
 int main(int argc, const char* argv[]) {
-  /*
   Matrix<int> mi(pf), mi2(pf);
   cout << "Soucin matic: " << endl;
   cin >> mi >> mi2;
@@ -17,12 +16,13 @@ int main(int argc, const char* argv[]) {
   cout << "mi2:\n" << mi2 << endl;
   cout << "mi * mi2:\n" << mi * mi2 << endl;
   Matrix<> md, md2;
-  */
 
+  /*
   Matrix<> md, md2;
   cout << "Soucin matic: " << endl;
   cin >> md >> md2;
   cout << "md:\n" << md << endl;
   cout << "md2:\n" << md2 << endl;
   cout << "md * md2:\n" << md * md2 << endl;
+  */
 }

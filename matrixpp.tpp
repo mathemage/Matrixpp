@@ -8,6 +8,7 @@
 ******************************************************************************/
 /* IMPLEMENTATION FILE */
 namespace mtrx {
+  // ==================================TELESA====================================================
   template<typename T>
   T Field<T>::_rec(const T & rhs) {             // s kontrolou na nenulovost
     try {
@@ -22,8 +23,9 @@ namespace mtrx {
       exit(EXIT_FAILURE);
     }
   }
+  // =================================/TELESA====================================================
 
-  // ==========================PREDDEFINOVANA TELESA===========================
+  // ==================================PREDDEFINOVANA TELESA=====================================
   // TELESO REALNYCH CISEL
   double minus_double(const double & rhs) { return - rhs; }
   double reciprocal_double(const double & rhs) { return 1 / rhs; }
@@ -77,9 +79,11 @@ namespace mtrx {
 
   // teleso zbytkovych trid radu "_order_"
   const int _order_ = 5;
-  Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>, plus_pf<_order_>, times_pf<_order_>, equals_pf<_order_>);
-  // =========================/PREDDEFINOVANA TELESA===========================
+  Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>,
+      plus_pf<_order_>, times_pf<_order_>, equals_pf<_order_>);
+  // =================================/PREDDEFINOVANA TELESA=====================================
 
+  // ==================================OBECNA MATICE=============================================
   // defaultni konstruktor "Matrix" - zabaleni dat do objektu tridy
   template<typename T>
   Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * values=0) :
@@ -104,10 +108,19 @@ namespace mtrx {
   // prohozeni dvou matic
   template<typename T>
   void Matrix<T>::swap(Matrix<T> & rhs) {
-    std::swap(this->_fld, rhs._fld);
-    std::swap(this->_height, rhs._height);
-    std::swap(this->_width, rhs._width);
-    std::swap(this->_values, rhs._values);
+    try {
+      if (this->_fld == rhs._fld) {
+        std::swap(this->_height, rhs._height);
+        std::swap(this->_width, rhs._width);
+        std::swap(this->_values, rhs._values);
+      } else {
+        throw MismatchedFieldException();
+      }
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   // vypis matice
@@ -141,7 +154,17 @@ namespace mtrx {
     for (typename Matrix<T>::iterator it_m = m.begin(); it_m != m.end(); it_m++) {
       in >> *it_m;
     }
-    return in;
+
+    // kontrola pro potomky
+    try {
+      if (m.is_valid()) {
+        return in;
+      }
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   template<typename T>
@@ -189,7 +212,6 @@ namespace mtrx {
     res._values = new T [_width*_height];
     for (int i = 0; i < _height; i++) {
       for (int j = 0; j < _width; j++) {
-        //cout << "[" << i << " " << j << "] = " << at(i,j) << " -> pos " << j*_height+i << endl;
         res._values[j*_height+i] = at(i,j);
       }
     }
@@ -253,4 +275,79 @@ namespace mtrx {
       exit(EXIT_FAILURE);
     }
   }
+  // =================================/OBECNA MATICE=============================================
+  
+  // ==================================VEKTORY===================================================
+  // defaultni konstruktor "Vect" - implicitni sirka 1
+  template<typename T>
+  Vect<T>::Vect(const Field<T> & fld=fld_reals, unsigned h=0, T * values=0) :
+    Matrix<T>(fld, h, 1, values) { } 
+
+  template<typename T>
+  Vect<T> & Vect<T>::operator=(const Vect<T> & v) {      // prirazeni
+    Matrix<T>::operator=(v);                             // spravne dealokace - viz metoda predka
+    return *this;
+  }
+
+  template<typename T>
+  Vect<T>::Vect(const Matrix<T> & m) {                   // conversion constructor
+    try {
+      if (1 == m.get_width()) {
+        unsigned h = m.get_height();
+        T * values = new T [h];
+        int i = 0;
+        for (typename Matrix<T>::const_iterator it_m = m.cbegin(); it_m != m.cend();
+            it_m++) {
+          values[i++] = *it_m;
+        }
+
+        Vect(*(m._fld), h, values);
+      } else {
+        throw NotAVectorException();
+      }
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  // =================================/VEKTORY===================================================
+  
+  // ==================================CTVERCOVE MATICE==========================================
+  // defaultni konstruktor "SqrMtrx" - implicitne stejne rozmery
+  template<typename T>
+  SqrMtrx<T>::SqrMtrx(const Field<T> & fld=fld_reals, unsigned dim=0, T * values=0) :
+    Matrix<T>(fld, dim, dim, values) { } 
+
+  template<typename T>
+  SqrMtrx<T> & SqrMtrx<T>::operator=(const SqrMtrx<T> & sq) {
+    Matrix<T>::operator=(sq);                            // spravne dealokace - viz metoda predka
+    return *this;
+  }
+
+  template<typename T>
+  SqrMtrx<T>::SqrMtrx(const Matrix<T> & m) {                   // conversion constructor
+    try {
+      unsigned h = m.get_height();
+      unsigned w = m.get_width();
+      if (h == w) {
+        T * values = new T [h*w];
+        int i = 0;
+        for (typename Matrix<T>::const_iterator it_m = m.cbegin(); it_m != m.cend();
+            it_m++) {
+          values[i++] = *it_m;
+        }
+
+        SqrMtrx(*(m._fld), h, values);
+      } else {
+        throw NotASqrMtrxException();
+      }
+    }
+    catch (exception & e) {
+      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  // =================================/CTVERCOVE MATICE==========================================
+
 }
