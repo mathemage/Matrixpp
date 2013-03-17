@@ -82,7 +82,7 @@ namespace mtrx {
     T (*_plus)(const T &, const T &);
     T (*_times)(const T &, const T &);
     bool (*_equals)(const T &, const T &);    // rovnost prvku telesa
-    T _rec(const T & rhs);                    // multiplikatvni invers s kontrolou na nenulovost
+    T _rec(const T & rhs) const;              // multiplikatvni invers s kontrolou na nenulovost
 
     // konstruktor
     Field(T zero, T one, T (*minus)(const T &), T (*reciprocal)(const T &), T
@@ -119,8 +119,7 @@ namespace mtrx {
         }
       }
       catch (exception & e) {
-        cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-        exit(EXIT_FAILURE);
+        display_exception(e);
       }
     }
     virtual bool is_valid() {                   // viz operator>>
@@ -236,6 +235,7 @@ namespace mtrx {
     T norm_squared() {
       return this->inner_product().at(0, 0);
     }
+    SqrMtrx<T> Householder();                   // matice Housholderovy reflexe
     // ===========================/PRO QR-ROZKLAD================================
   };
 
@@ -268,7 +268,6 @@ namespace mtrx {
       Matrix<T> m(_fld, _height, _height, _values);
       return m;
     }
-
     SqrMtrx(const Matrix<T> & m);                  // conversion constructor
   };
 

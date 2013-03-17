@@ -5,4 +5,4 @@ import sys
 print h
 print w
 for i in xrange(h*w):
-    print round(random.uniform(d, u), 2)
+    print round(random.uniform(d, u), 9)

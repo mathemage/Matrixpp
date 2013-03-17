@@ -10,7 +10,7 @@
 namespace mtrx {
   // ==================================TELESA====================================================
   template<typename T>
-  T Field<T>::_rec(const T & rhs) {             // s kontrolou na nenulovost
+  T Field<T>::_rec(const T & rhs) const {             // s kontrolou na nenulovost
     try {
       if (_zero == rhs) {
         throw InverseOfNullException();
@@ -32,8 +32,6 @@ namespace mtrx {
   double times_double(const double & lhs, const double & rhs) { return lhs * rhs; }
   bool equals_double(const double & lhs, const double & rhs) { return lhs == rhs; }
   Field<double> fld_reals(0, 1, minus_double, reciprocal_double,  plus_double,
-      times_double, equals_double);
-  Field<double> fld_reals2(0, 1, minus_double, reciprocal_double,  plus_double,
       times_double, equals_double);
 
   // PRVOTELESO
@@ -244,6 +242,9 @@ namespace mtrx {
   Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y) {
     int x_h = x.get_height();
     int y_w = y.get_width();
+
+    //cout << "[1]:\n" << x << endl;
+    //cout << "[2]:\n" << y << endl;
     try {
       if (y.get_height() != x.get_width()) {
         throw MismatchedDimException();
@@ -312,12 +313,12 @@ namespace mtrx {
 
   template<typename T>
   SqrMtrx<T> & SqrMtrx<T>::operator=(const SqrMtrx<T> & sq) {
-    Matrix<T>::operator=(sq);                            // spravne dealokace - viz metoda predka
+    Matrix<T>::operator=(sq);                            // dealokace puv. dat - viz metoda predka
     return *this;
   }
 
   template<typename T>
-  SqrMtrx<T>::SqrMtrx(const Matrix<T> & m) {                   // conversion constructor
+  SqrMtrx<T>::SqrMtrx(const Matrix<T> & m) {             // conversion constructor
     try {
       _height = m.get_height();
       _width = m.get_width();
@@ -337,5 +338,33 @@ namespace mtrx {
     }
   }
   // =================================/CTVERCOVE MATICE==========================================
+  
+  // ==================================PRO QR-ROZKLAD============================================
+  template<typename T>
+  SqrMtrx<T> unit_matrix(unsigned dim, const Field<T> & fld=fld_reals) {  // 1kova matice
+    T * values = new T [dim * dim];
+    for (int i = 0; i < dim; i++) {
+      for (int j = 0; j < dim; j++) {
+        values[i*dim + j] = (i == j) ? fld._one : fld._zero;
+      }
+    }
+    return SqrMtrx<T>(fld, dim, values);
+  }
+  template<typename T>
+  SqrMtrx<T> Vect<T>::Householder() {                             // matice Housholderovy reflexe
+    const Field<T> & fld = *_fld;
 
+    SqrMtrx<T> res(unit_matrix(_height, fld));
+
+    T norm = norm_squared();
+    T denominator = fld._rec(norm);
+    T two = fld._plus(fld._one, fld._one);
+    SqrMtrx<T> minuend(outer_product());
+
+    minuend = minuend.mul_by_scal(two);
+    minuend = minuend.mul_by_scal(denominator);
+    res = res - minuend;
+    return res;
+  }
+  // =================================/PRO QR-ROZKLAD============================================
 }
