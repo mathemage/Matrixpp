@@ -19,6 +19,7 @@ using namespace std;
 namespace mtrx {
   // =================================forward declaration=======================
   template<typename T> class Matrix;
+  template<typename T> class SqrMtrx;
   template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
   template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
   // ================================/forward declaration=======================
@@ -202,6 +203,7 @@ namespace mtrx {
     using Matrix<T>::_fld;
   public:
     using Matrix<T>::begin;
+    using Matrix<T>::transpose;
     bool is_valid() {                           // viz operator>>
       if (1 == _width) {
         return true;
@@ -209,7 +211,6 @@ namespace mtrx {
         throw NotAVectorException();
       }
     }
-
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - implicitni sirka 1
@@ -224,6 +225,18 @@ namespace mtrx {
     }
 
     Vect(const Matrix<T> & m);                  // conversion constructor
+    
+    // ============================PRO QR-ROZKLAD================================
+    SqrMtrx<T> outer_product() {
+      return *this * this->transpose();
+    }
+    SqrMtrx<T> inner_product() {
+      return this->transpose() * *this;
+    }
+    T norm_squared() {
+      return this->inner_product().at(0, 0);
+    }
+    // ===========================/PRO QR-ROZKLAD================================
   };
 
   // CTVERCOVE MATICE

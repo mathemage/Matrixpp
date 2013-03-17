@@ -285,16 +285,15 @@ namespace mtrx {
   template<typename T>
   Vect<T>::Vect(const Matrix<T> & m) {                   // conversion constructor
     try {
-      if (1 == m.get_width()) {
-        unsigned h = m.get_height();
-        T * values = new T [h];
+      _width = m.get_width();
+      if (1 == _width) {
+        _height = m.get_height();
+        _values = new T [_height];
         int i = 0;
         for (typename Matrix<T>::const_iterator it_m = m.cbegin(); it_m != m.cend();
             it_m++) {
-          values[i++] = *it_m;
+          _values[i++] = *it_m;
         }
-
-        Vect(*(m._fld), h, values);
       } else {
         throw NotAVectorException();
       }
