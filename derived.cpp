@@ -27,11 +27,13 @@ int main(int argc, const char* argv[]) {
   cout << "sq3:\n" << sq3 << endl;
   cout << "sq1 " << ((sq1==sq3) ? "=" : "!") << "= sq3" << endl;
 
+  cout << endl;
+
   Matrix<> md1;
   cin >> md1;
-  sq3 = md1;
-  cout << "sq3:\n" << sq3 << endl;
   cout << "md1:\n" << md1 << endl;
+  sq3 = md1;
+  cout << "new sq3:\n" << sq3 << endl;
   cout << "sq3 " << ((sq3==md1) ? "=" : "!") << "= md1" << endl;
 
   return 0;

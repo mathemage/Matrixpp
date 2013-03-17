@@ -24,6 +24,11 @@ namespace mtrx {
   // ================================/forward declaration=======================
 
   // =================================vyjimky===================================
+  void display_exception(exception & e) {
+    cerr << "An exception has occured: \"" << e.what() << "\"" << endl;
+    exit(EXIT_FAILURE);
+  }
+
   struct InverseOfNullException : public exception {
     const char * what () const throw () {
       return "Inversion of null element!";
@@ -48,15 +53,19 @@ namespace mtrx {
     }
   };
 
-  struct NotAVectorException : public exception {
+  struct NotAVectorException : public MismatchedDimException {
     const char * what () const throw () {
-      return "Not a vector (viz dimensions)!";
+      std::string msg(MismatchedDimException::what());
+      msg.append(" Not a vector!");
+      return msg.c_str();
     }
   };
 
-  struct NotASqrMtrxException : public exception {
+  struct NotASqrMtrxException : public MismatchedDimException {
     const char * what () const throw () {
-      return "Not a square matrix (viz dimensions)!";
+      std::string msg(MismatchedDimException::what());
+      msg.append(" Not a square matrix!");
+      return msg.c_str();
     }
   };
   // =================================vyjimky===================================
@@ -113,7 +122,13 @@ namespace mtrx {
         exit(EXIT_FAILURE);
       }
     }
-    bool is_valid() { return true; }
+    virtual bool is_valid() {                   // viz operator>>
+      if (_height * _width == size()) {
+        return true;
+      } else {
+        throw MismatchedDimException();
+      }
+    }
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
@@ -187,7 +202,14 @@ namespace mtrx {
     using Matrix<T>::_fld;
   public:
     using Matrix<T>::begin;
-    using Matrix<T>::is_valid;
+    bool is_valid() {                           // viz operator>>
+      if (1 == _width) {
+        return true;
+      } else {
+        throw NotAVectorException();
+      }
+    }
+
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - implicitni sirka 1
@@ -214,7 +236,13 @@ namespace mtrx {
     using Matrix<T>::_values;
     using Matrix<T>::_fld;
   public:
-    using Matrix<T>::is_valid;
+    virtual bool is_valid() {                   // viz operator>>
+      if (_height == _width) {
+        return true;
+      } else {
+        throw NotASqrMtrxException();
+      }
+    }
 
     // ============================KANONICKA FORMA===============================
     // defaultni konstruktor - implicitne stejne rozmery

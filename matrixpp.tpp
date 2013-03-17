@@ -19,8 +19,7 @@ namespace mtrx {
       }
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
   // =================================/TELESA====================================================
@@ -118,8 +117,7 @@ namespace mtrx {
       }
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
 
@@ -157,13 +155,12 @@ namespace mtrx {
 
     // kontrola pro potomky
     try {
-      if (m.is_valid()) {
+      if (m.is_valid()) {                         // polymorfni is_valid()
         return in;
       }
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
 
@@ -188,12 +185,10 @@ namespace mtrx {
           *it = *it_m;
         }
       }
-
       return *this;
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
 
@@ -235,8 +230,7 @@ namespace mtrx {
       return res;
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
 
@@ -271,8 +265,7 @@ namespace mtrx {
       return res;
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
   // =================================/OBECNA MATICE=============================================
@@ -307,8 +300,7 @@ namespace mtrx {
       }
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
   // =================================/VEKTORY===================================================
@@ -328,24 +320,21 @@ namespace mtrx {
   template<typename T>
   SqrMtrx<T>::SqrMtrx(const Matrix<T> & m) {                   // conversion constructor
     try {
-      unsigned h = m.get_height();
-      unsigned w = m.get_width();
-      if (h == w) {
-        T * values = new T [h*w];
+      _height = m.get_height();
+      _width = m.get_width();
+      if (_height == _width) {
+        _values = new T [_height*_width];
         int i = 0;
         for (typename Matrix<T>::const_iterator it_m = m.cbegin(); it_m != m.cend();
             it_m++) {
-          values[i++] = *it_m;
+          _values[i++] = *it_m;
         }
-
-        SqrMtrx(*(m._fld), h, values);
       } else {
         throw NotASqrMtrxException();
       }
     }
     catch (exception & e) {
-      cerr << "Exception caught: \"" << e.what() << "\"" << endl;
-      exit(EXIT_FAILURE);
+      display_exception(e);
     }
   }
   // =================================/CTVERCOVE MATICE==========================================
