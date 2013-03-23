@@ -14,6 +14,7 @@
 #include<exception>
 #include<cstdlib>
 #include<iterator>
+#include<cmath>
 using namespace std;
 
 namespace mtrx {
@@ -32,7 +33,7 @@ namespace mtrx {
 
   struct InverseOfNullException : public exception {
     const char * what () const throw () {
-      return "Inversion of null element!";
+      return "Field inversion of null element!";
     }
   };
 
@@ -236,6 +237,7 @@ namespace mtrx {
       return this->inner_product().at(0, 0);
     }
     SqrMtrx<T> Householder();                   // matice Housholderovy reflexe
+    SqrMtrx<T> Householder_canon();             // Housholderova reflexe do nasobku vektoru e_1
     // ===========================/PRO QR-ROZKLAD================================
   };
 

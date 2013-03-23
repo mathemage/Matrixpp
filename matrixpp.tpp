@@ -351,7 +351,7 @@ namespace mtrx {
     return SqrMtrx<T>(fld, dim, values);
   }
   template<typename T>
-  SqrMtrx<T> Vect<T>::Householder() {                             // matice Housholderovy reflexe
+  SqrMtrx<T> Vect<T>::Householder() {             // matice Housholderovy reflexe
     const Field<T> & fld = *_fld;
 
     SqrMtrx<T> res(unit_matrix(_height, fld));
@@ -364,6 +364,29 @@ namespace mtrx {
     minuend = minuend.mul_by_scal(two);
     minuend = minuend.mul_by_scal(denominator);
     res = res - minuend;
+    return res;
+  }
+  // Housholderova reflexe do nasobku vektoru e_1 (verse pro double)
+  template<>
+  SqrMtrx<double> Vect<double>::Householder_canon() {       
+    double norm = sqrt(norm_squared());
+    
+    // "norma"-nasobek vektoru e_1
+    double * can_val = new double [_height];
+    can_val[0] = norm;
+    for (int i = 1; i < _height; i++) {
+      can_val[i] = 0;
+    }
+    Vect<double> canonic(*_fld, _height, can_val);
+
+    if (*this == canonic) {
+      return unit_matrix(_height, *_fld);
+    } else {
+      Vect<double> diff = *this - canonic;
+      return diff.Householder();
+    }
+
+    SqrMtrx<> res;
     return res;
   }
   // =================================/PRO QR-ROZKLAD============================================

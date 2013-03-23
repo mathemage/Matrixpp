@@ -7,6 +7,7 @@
                  http://www.gnu.org/licenses/
 ******************************************************************************/
 #include "all.hpp"
+#include <cmath>
 
 int main(int argc, const char* argv[]) {
   //Matrix<> md;
@@ -24,7 +25,7 @@ int main(int argc, const char* argv[]) {
 
   cin >> u;
   cout << "u:\n" << u << endl;
-  u = u.mul_by_scal(v.norm_squared() / u.norm_squared());
+  u = u.mul_by_scal(sqrt(v.norm_squared()) / sqrt(u.norm_squared()));
   cout << "u':\n" << u << endl;
   Vect<> diff = u-v;
   SqrMtrx<> haus = diff.Householder();
