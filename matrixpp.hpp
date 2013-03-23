@@ -21,6 +21,7 @@ namespace mtrx {
   // =================================forward declaration=======================
   template<typename T> class Matrix;
   template<typename T> class SqrMtrx;
+  template<typename T> class Vect;
   template<typename T> ostream & operator<<(ostream & out, const Matrix<T> & m);
   template<typename T> istream & operator>>(istream & in, Matrix<T> & m);
   // ================================/forward declaration=======================
@@ -169,12 +170,17 @@ namespace mtrx {
     // ===========================/NORMA: kontejnery===============================
     
     // ============================MATICOVE OPERACE===============================
-    Matrix mul_by_scal(const T & scalar) const;          // nasobeni skalarem
-    Matrix transpose() const;                            // transposice
-    Matrix gauss_elim() const;                           // Gaussova eliminace
-    Matrix gauss_jord_elim() const;                      // Gaussova-Jordanova eliminace O(n^3)
-    void LUP(Matrix & L, Matrix & U, Matrix & P) const;  // LUP dekomposice
-    void QR(Matrix & Q, Matrix & R) const;               // QR dekomposice
+    Matrix mul_by_scal(const T & scalar) const;                             // nasobeni skalarem
+    Matrix transpose() const;                                               // transposice
+    Matrix subblock(unsigned u, unsigned l, unsigned d, unsigned r) const;  // souvisla podmatice
+    Vect<T> column(unsigned j) const {                                      // j-ty sloupec
+      Vect<T> col = subblock(0, j, _height-1, j);
+      return col;
+    }
+    Matrix gauss_elim() const;                                              // Gaussova eliminace
+    Matrix gauss_jord_elim() const;                                         // Gaussova-Jordanova eliminace O(n^3)
+    void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice
+    void QR(SqrMtrx<T> & Q, Matrix & R) const;                              // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
     
     // vypis matice
@@ -236,6 +242,7 @@ namespace mtrx {
     T norm_squared() {
       return this->inner_product().at(0, 0);
     }
+    Vect e1_reflection();                       // "norma" nasobek vektoru e_1
     SqrMtrx<T> Householder();                   // matice Housholderovy reflexe
     SqrMtrx<T> Householder_canon();             // Housholderova reflexe do nasobku vektoru e_1
     // ===========================/PRO QR-ROZKLAD================================

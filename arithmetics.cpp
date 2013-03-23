@@ -36,6 +36,16 @@ int main(int argc, const char* argv[]) {
   cin >> md2;
   cout << "md:\n" << md << endl;
   cout << "md2:\n" << md2 << endl;
+
+  cout << "Podmatice: " << endl;
+  cout << "md.subblock(1, 1, 2, 3):\n" << md.subblock(1, 1, 2, 3) << endl;
+  cout << "md.subblock(2, 1, 4, 4):\n" << md.subblock(2, 1, 4, 4) << endl;
+  
+  for (int i = 0; i < md.get_width(); i++) {
+    cout << i << ". column:\n" << md.column(i) << endl << endl;
+  }
+
+  cout << "Plus minus: " << endl;
   cout << "md + md2:\n" << md + md2 << endl;
   cout << "md - md2:\n" << md - md2 << endl;
 

@@ -84,7 +84,17 @@ namespace mtrx {
   // defaultni konstruktor "Matrix" - zabaleni dat do objektu tridy
   template<typename T>
   Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * values=0) :
-    _fld(&fld), _height(h), _width(w), _values(values) { } 
+    _fld(&fld), _height(h), _width(w), _values(values) {
+    // kontrola pro potomky
+    try {
+      if (!is_valid()) {                         // polymorfni is_valid()
+        throw;
+      }
+    }
+    catch (exception & e) {
+      display_exception(e);
+    }
+  } 
 
   // rovnost matic
   template<typename T>
@@ -209,6 +219,36 @@ namespace mtrx {
       }
     }
     return res;
+  }
+
+  // souvisla podmatice
+  template<typename T>
+  Matrix<T> Matrix<T>::subblock(unsigned u, unsigned l, unsigned d, unsigned r) const {
+    try {
+      if (u < 0 || u >= _height ||
+                 l < 0 || l >= _width ||
+                 d < 0 || d >= _height ||
+                 r < 0 || r >= _width) {
+        throw OutOfRangeException();
+      } else if (u > d || l > r) {
+        throw MismatchedDimException();
+      }
+
+      unsigned w = r-l+1;
+      unsigned h = d-u+1;
+      Matrix<T> res(*_fld, h, w);
+      res._values = new T [h*w];
+      int idx = 0;
+      for (int x = u; x <= d; x++) {
+        for (int y = l; y <= r; y++) {
+          res._values[idx++] = at(x,y);
+        }
+      }
+      return res;
+    }
+    catch (exception & e) {
+      display_exception(e);
+    }
   }
 
   template<typename T>
@@ -350,6 +390,18 @@ namespace mtrx {
     }
     return SqrMtrx<T>(fld, dim, values);
   }
+
+  template<>
+  Vect<double> Vect<double>::e1_reflection() {    // "norma" nasobek vektoru e_1
+    double * can_val = new double [_height];
+    can_val[0] = sqrt(norm_squared());
+    for (int i = 1; i < _height; i++) {
+      can_val[i] = _fld->_zero;
+    }
+    Vect<double> res(*_fld, _height, can_val);
+    return res;
+  }
+
   template<typename T>
   SqrMtrx<T> Vect<T>::Householder() {             // matice Housholderovy reflexe
     const Field<T> & fld = *_fld;
@@ -372,12 +424,7 @@ namespace mtrx {
     double norm = sqrt(norm_squared());
     
     // "norma"-nasobek vektoru e_1
-    double * can_val = new double [_height];
-    can_val[0] = norm;
-    for (int i = 1; i < _height; i++) {
-      can_val[i] = 0;
-    }
-    Vect<double> canonic(*_fld, _height, can_val);
+    Vect<> canonic = e1_reflection();
 
     if (*this == canonic) {
       return unit_matrix(_height, *_fld);
@@ -388,6 +435,71 @@ namespace mtrx {
 
     SqrMtrx<> res;
     return res;
+  }
+  template<typename T>
+  void Matrix<T>::QR(SqrMtrx<T> & Q, Matrix<T> & R) const {              // QR dekomposice
+    Vect<T> col1(this->column(0));         // 1. sloupec
+    if (1 == _width) {                     // konec rekurse
+      Q = col1.Householder_canon().transpose();
+      R = col1.e1_reflection();
+    } else if (1 == _height) {             // konec rekurse: 1diny radek
+      // prostor pro vylepseni: obecna nezapornost
+      T coeff = (at(0,0) >= _fld->_zero) ? _fld->_one : _fld->_minus(_fld->_one);
+      T * Q_val = new T [1];
+      Q_val[0] = coeff;
+      Q = SqrMtrx<T>(*_fld, 1, Q_val);
+      R = mul_by_scal(coeff);
+    } else {
+      /*
+       __________________________
+       | alpha |       b^T       |
+       --------------------------
+       |   0   |                 |
+       |   .   |                 |
+       |   .   |        B        |  ==  H * (*this) =: (oznacme "tmp")
+       |   .   |                 |
+       |   0   |                 |
+       __________________________
+       */
+      SqrMtrx<T> H = col1.Householder_canon();
+      Matrix<T> tmp = H * (*this);
+      Matrix<T> B = tmp.subblock(1, 1, _height-1, _width-1);
+
+      // rekursivne QR na B
+      SqrMtrx<T> Q2;
+      Matrix<T> R2;
+
+      B.QR(Q2, R2);
+
+      // sestaveni R z R2
+      T * R_val = new T [_height*_width];
+      unsigned idx = 0;
+      for (int i = 0; i < _width; i++) {                // 1. radek
+        R_val[idx++] = tmp.at(0,i);
+      }
+      for (int i = 1; i < _height; i++) {               // dalsi radky
+        R_val[idx++] = _fld->_zero;
+        for (int j = 1; j < _width; j++) {
+          R_val[idx++] = R2.at(i-1,j-1);
+        }
+      }
+      R = Matrix<T>(*_fld, _height, _width, R_val);
+      
+      // sestaveni Q z Q2
+      T * Q_val = new T [_height*_height];
+      idx = 0;
+      for (int i = 0; i < _height; i++) {                // 1. radek
+        Q_val[idx++] = (i == 0) ? _fld->_one :_fld->_zero;
+      }
+      for (int i = 1; i < _height; i++) {                // dalsi radky
+        Q_val[idx++] = _fld->_zero;
+        for (int j = 1; j < _height; j++) {
+          Q_val[idx++] = Q2.at(i-1,j-1);
+        }
+      }
+      SqrMtrx<T> newQ(*_fld, _height, Q_val);
+      Q = H.transpose() * newQ;
+    }
   }
   // =================================/PRO QR-ROZKLAD============================================
 }
