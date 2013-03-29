@@ -309,6 +309,19 @@ namespace mtrx {
       display_exception(e);
     }
   }
+  
+  // zaokrouhleni cisel blizkych nule - implementovano pro double
+  template<>
+  Matrix<double> Matrix<double>::round_to_zeroes() const {
+    Matrix<double> res(*this);
+    for (typename Matrix<double>::iterator it = res.begin(); it != res.end();
+        it++) {
+      if (fabs(*it) < epsilon) {
+        *it = 0;
+      }
+    }
+    return res;
+  }
   // =================================/OBECNA MATICE=============================================
   
   // ==================================VEKTORY===================================================
@@ -508,7 +521,7 @@ namespace mtrx {
     SqrMtrx<T> A = *this;
     for (; iterations_count > 0; iterations_count--) {
       A.QR(Q, R);
-      A = R * Q;
+      A = (R * Q).round_to_zeroes();
     }
     return A;
   }

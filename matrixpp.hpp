@@ -177,11 +177,11 @@ namespace mtrx {
       Vect<T> col = subblock(0, j, _height-1, j);
       return col;
     }
+    Matrix round_to_zeroes() const;                                         // zaokrouhleni cisel blizkych nule
     Matrix gauss_elim() const;                                              // Gaussova eliminace
     Matrix gauss_jord_elim() const;                                         // Gaussova-Jordanova eliminace O(n^3)
     void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice - [TO BE IMPLEMENTED]
     void QR(SqrMtrx<T> & Q, Matrix & R) const;                              // QR dekomposice
-    Matrix round() const;                                                   // zaokrouhli cisla blizka nule
     // ===========================/MATICOVE OPERACE===============================
     
     // vypis matice
@@ -283,6 +283,8 @@ namespace mtrx {
   };
 
   // ================================/tridy matic=================================
+
+  const double epsilon = 0.00009;               // hranice pro zaokrouhleni na nulu
 }
 
 #include "matrixpp.tpp"         // implementacni soubor s definicemi
