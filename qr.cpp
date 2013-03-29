@@ -16,11 +16,14 @@ int main(int argc, const char* argv[]) {
   SqrMtrx<> Q;
   cin >> A;
   A.QR(Q, R);
-  cout << setprecision(20);
+  cout << setprecision(3);
   cout << "Q:\n" << Q << endl;
   cout << "R:\n" << R << endl;
   cout << "A:\n" << A << endl;
   cout << "Q * R:\n" << Q * R << endl;
+  SqrMtrx<> B = A;
+  unsigned it = 400;
+  cout << "A.QR_algorithm(" << it << "):\n" << B.QR_algorithm(it) << endl;
   cout << "===============/QR factorization==============" << endl;
 
   return 0;

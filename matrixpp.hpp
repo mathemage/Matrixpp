@@ -179,8 +179,9 @@ namespace mtrx {
     }
     Matrix gauss_elim() const;                                              // Gaussova eliminace
     Matrix gauss_jord_elim() const;                                         // Gaussova-Jordanova eliminace O(n^3)
-    void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice - [TO BE DONE]
+    void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice - [TO BE IMPLEMENTED]
     void QR(SqrMtrx<T> & Q, Matrix & R) const;                              // QR dekomposice
+    Matrix round() const;                                                   // zaokrouhli cisla blizka nule
     // ===========================/MATICOVE OPERACE===============================
     
     // vypis matice
@@ -278,6 +279,7 @@ namespace mtrx {
       return m;
     }
     SqrMtrx(const Matrix<T> & m);                  // conversion constructor
+    SqrMtrx QR_algorithm(unsigned iterations_count); // QR algoritmus pro zadany pocet iteraci
   };
 
   // ================================/tridy matic=================================

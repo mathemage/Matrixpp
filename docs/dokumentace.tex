@@ -16,6 +16,8 @@
 %\newtheorem{lem}[tvrz]{Lemma}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\cpp}{\textsc{C++}}
+\newcommand{\mpp}{\textsc{Matrix++}}
 
 \begin{document}
 
@@ -32,7 +34,7 @@ Univerzity Karlovy v Praze}\\[1.5cm]
 
 % Title
 \HRule \\[0.4cm]
-{ \huge \bfseries Knihovna Matrix++}\\[0.4cm]
+{ \huge \bfseries Knihovna \mpp}\\[0.4cm]
 
 \HRule \\[1.5cm]
 
@@ -60,39 +62,44 @@ RNDr.~F.~\textsc{Zavoral},~Ph. D.
 
 \end{titlepage}
 
+\thispagestyle{empty}
 
 \begin{abstract}
 Dokumentace k zápočtovému programu.
-Program je implementací šablonované knihovny pro práci s maticemi
-representované jakožto kontejnery.
+Práce je implementací ša\-blo\-no\-va\-né knihovny pro práci s maticemi
+representované ve formě kontejnerů jazyka~\cpp.
 \end{abstract}
 
 \pagebreak
 
+\thispagestyle{empty}
 \tableofcontents
 
 \pagebreak
 
-\part{Úvodní slovo}
-Když v roce $1926$ slavný český matematik {\sl Otakar Borůvka\/} publikoval
-  svou práci {\sl O jistém problému minimálním\/}---potýkající se s problémem
-  elektrické sítě na Moravě---zřejmě netušil, že píše o problému z oblasti {\sl
-  teorie grafů\/} bez jejího jediného využití.
-Vskutku---jeho práce se značně opírala o aparát lineární algebry a co tehdy
-  zabralo několik desítek stran, by dnes za pomoci grafových pojmů šlo popsat
-  na počtu stránek spočitatelném na prstech jedné ruky.
+\setcounter{page}{1}
+\pagestyle{headings}
 
-Teorie grafů však neobnáší pouhou {\sl sílu\/} terminologie, nýbrž dokáže
-  neoby\-čejně zdárně popsat problémy všedního života---ať už se již jedná o
-  elektrickou síť, dopravní infrastrukturu, finanční tok či vzájemné vztahy
-  uživatelů na {\sl Facebooku\/}.
+\part{Předmluva}
 
-A právě knihovna {\tt GraphAlpha} se snaží algoritmicky {\sl vydolovat\/}
-  některé základní informace o grafech---neboli informaticky řečeno na nich
-  provádět tzv.~{\sl grafové operace\/}.
-V drtivé většině případů k tomu využívá známé algoritmy slavných informatiků.
-Autor pevně doufá, že pročítáním jejich popisu a implementace příjemně strávíte 
-  svůj volný čas.
+Text, jenž právě čtete, dokumentuje knihovnu \mpp.
+Ta manipuluje s~matematickými maticemi formou kontejnerů programovacího jazyka
+C++.
+Konkrétně, pro zvolený datový typ a pro zadaný způsob manipulace s prvky
+(neboli pro zadané \emph{těleso\/}, nad nímž chceme matici definovat) je skrze
+šablony vygenerována jednotlivá třída.
+
+Dále jsou implementovány základní maticové operace: sčítání, odčítání, násobení
+skalárem, násobení dvou matic, transposice a další.
+
+Mimojiné je zahrnuta podpora funkcí specifických pro jazyk \cpp: přetí\-že\-ní
+operátorů $\ll$ a $\gg$ pro vstupně/výstupní operace; konstruktury a
+destruktory kanonické formy; konversní operátory a konstruktory; členské
+po\-lož\-ky a~metody splňující normu o~kontejnerech a~iterátorech
+\cite{iso-norma}.
+
+Nadto, jakožto praktická aplikace schopností tohoto rozhraní, byl implementován
+QR rozklad a~QR algoritmus používáný pro výpočet vlastních čísel.
 
 \pagebreak
 
@@ -931,26 +938,23 @@ Bye bye...
 
 \pagebreak
 
+\part{Závěr}
+
+Autor musí podotknout, že se nabízí nemalé množství prostoru pro vylepšení:
+\begin{enumerate}
+  \item {\bf Násobení matic\/} přímo podle definice není nejefektivnější.
+    Lze vylepšit přepsáním funkce
+\begin{verbatim}template<typename T>
+Matrix<T> operator*(const Matrix<T> &, const Matrix<T> &);\end{verbatim}
+    např. pomocí \emph{Strassenova algoritmu\/}.
+\end{enumerate}
+
+\pagebreak
+
 \begin{thebibliography}{9}
 
-\bibitem{dijkstra}
-\url{http://en.wikipedia.org/wiki/Dijkstra\_algorithm}
-
-\bibitem{floyd-warshall}
-\url{http://en.wikipedia.org/wiki/Floyd-Warshall\_algorithm}
-
-\bibitem{tarjan}
-\url{http://en.wikipedia.org/wiki/Tarjan\%27s\_strongly\_connected\_components\_algorithm}
-
-\bibitem{tsort}
-\url{http://en.wikipedia.org/wiki/Topological\_sorting}
-
-\bibitem{reduction}
-\url{http://en.wikipedia.org/wiki/Transitive\_reduction#Graph\_algorithms\_for\_transitive\_reduction}
-
-\bibitem{topfer-knizka}
-Doc.~RNDr.~T\"opfer, Pavel. \textsl{Algoritmy a programovací techniky},
-2.~vydání, Prometheus, Praha (2007). ISBN 978-80-7196-350-9.
+\bibitem{iso-norma}
+Norma \textsc{ISO/IEC N3290} programovacího jazyka \cpp.
 
 \end{thebibliography}
 

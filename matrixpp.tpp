@@ -499,5 +499,18 @@ namespace mtrx {
       Q = col1.Householder_canon().transpose() * newQ;
     }
   }
+
+  // QR algoritmus pro zadany pocet iteraci
+  template<typename T>
+  SqrMtrx<T> SqrMtrx<T>::QR_algorithm(unsigned iterations_count) {
+    SqrMtrx<T> Q;
+    Matrix<T> R;
+    SqrMtrx<T> A = *this;
+    for (; iterations_count > 0; iterations_count--) {
+      A.QR(Q, R);
+      A = R * Q;
+    }
+    return A;
+  }
   // =================================/PRO QR-ROZKLAD============================================
 }
