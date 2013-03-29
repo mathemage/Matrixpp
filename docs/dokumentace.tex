@@ -4,7 +4,7 @@
 %\usepackage{amsfonts}
 %\usepackage{amsthm}
 %\usepackage{amsmath}
-%\usepackage{amssymb}
+\usepackage{amssymb}
 \usepackage[pdftex]{graphicx}
 %\usepackage{enumerate}
 %\usepackage{stmaryrd}
@@ -18,6 +18,8 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\cpp}{\textsc{C++}}
 \newcommand{\mpp}{\textsc{Matrix++}}
+
+\hyphenation{ma-ti-ce}
 
 \begin{document}
 
@@ -105,24 +107,63 @@ QR rozklad a~QR algoritmus používáný pro výpočet vlastních čísel.
 
 \part{Programátorský manuál}
 \section{Anotace}
-Knihovna pro práci s grafy orientovanými a neorientovanými (a třeba také s
-multigrafy nebo hypergrafy) --- definuje si nějaké rozumné uložení grafu
-v~paměti (třeba pole vrcholů a seznamy hran z vrcholů vycházejících) a~nabízí
-funkce pro běžné grafové operace (např.\ hledání nejkratší cesty, minimální
-kostry, komponent souvislosti, transitivní redukce či uzávěru, topologické
-třídění grafu). 
+Knihovna pro práci s maticemi.
+Nabízí funkce pro běžné maticové operace a rozklady (s možností aplikace např.
+QR rozkladu pro hledání vlastních čísel).
 
 \section{Přesné zadání}
 Implementace běžných operací s maticemi (sčítání, násobení, inverze,
 determinant) použitím efektivních algoritmů. 
-Matice bude representována ná\-sle\-du\-jí\-cí datovou strukturou:
+Matice bude representována šablonovanou třídou a bude brát v potaz zadání
+jiného tělesa pro prvky.
 
-\renewcommand{\labelitemi}{$\spadesuit$}
+\section{Struktura Field}
+
+TBD \ldots
+
+\section{Třída Matrixpp}
+
+Nejobecnější kontejner matic - příslušné těleso zadáváno formou jednoho z
+atributů.
+Hlavička je
+\begin{verbatim}
+template<typename T=double> class Matrix;
+\end{verbatim}
+(implicitní \verb=double= jest nastaven pro nejběžnější účely matic nad tělesem
+$\mathbb{R}$.)
+
+\renewcommand{\labelitemi}{$\clubsuit$}
+\renewcommand{\labelitemii}{$\heartsuit$}
+\renewcommand{\labelitemiii}{$\spadesuit$}
 
 \begin{itemize}
-\item \textbf{Pole vrcholů} obsahující informace o svých následovnících.
-\item \textbf{Spoják následovníků} u každého vrcholu, obsahující navíc
-informaci o váze (resp. ceně) hrany.
+  \item Členské atributy
+  \begin{itemize}
+    \item privátní
+    \begin{itemize}
+      \item \verb=_height= \ldots počet řádků matice
+      \item \verb=_width= \ldots počet sloupců matice
+      \item \verb=_values= \ldots 1-D pole obsahující samotné prvky matice
+    \end{itemize}
+    \item veřejné
+    \begin{itemize}
+      \item \verb=_fld= \ldots ukazatel na maticové těleso
+    \end{itemize}
+  \end{itemize}
+  \item Členské metody
+  \begin{itemize}
+    \item veřejné
+    \begin{itemize}
+      \item \verb=get_height= \ldots vrací počet řádků matice
+      \item \verb=get_width= \ldots vrací počet sloupců matice
+      \item \verb=at= \ldots vrací hodnotu prvku na zadaných
+        indexech\thinspace%
+        \footnote{počítáno od $(0,0)$ jako po zbytek textu}
+      \item \verb=is_valid= \ldots ověřuje korektnost matice (virtuální funkce:
+        vy\-u\-ži\-tel\-né pro potomky třeba při kontrolách rozměrů či
+        regularity)
+    \end{itemize}
+  \end{itemize}
 \end{itemize}
 
 Dále bude nad digrafy možné provádět následující operace:

@@ -109,8 +109,8 @@ namespace mtrx {
   public:
     const Field<T> * const _fld;                // teleso, nad nimz se operuje (const nezmenitelne)
 
-    unsigned get_width() const { return _width; }
     unsigned get_height() const { return _height; }
+    unsigned get_width() const { return _width; }
     // prvek s indexy (i,j), zacatek od (0,0)
     T at(unsigned i, unsigned j) const {
       try {
