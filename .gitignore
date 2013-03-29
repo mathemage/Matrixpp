@@ -15,6 +15,13 @@
 # Vim swap files
 *.swp
 
+# TeX files
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+
 # Executable files
 *.exe
 *.sh

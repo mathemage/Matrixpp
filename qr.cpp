@@ -12,19 +12,8 @@
 
 int main(int argc, const char* argv[]) {
   cout << "================QR factorization==============" << endl;
-  Vect<> v;
-  cin >> v;
-  cout << "v:\n" << v << endl;
-
+  Matrix<> A, R;
   SqrMtrx<> Q;
-  Matrix<> R;
-  v.QR(Q, R);
-  cout << "Q:\n" << Q << endl;
-  cout << "R:\n" << R << endl;
-  cout << "Q*R:\n" << Q*R << endl;
-
-  // rozklad pro matice obecnych dimensi
-  Matrix<> A;
   cin >> A;
   A.QR(Q, R);
   cout << setprecision(20);

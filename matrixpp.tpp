@@ -461,17 +461,15 @@ namespace mtrx {
        |   0   |                 |
        __________________________
        */
-      SqrMtrx<T> H = col1.Householder_canon();
-      Matrix<T> tmp = H * (*this);
-      Matrix<T> B = tmp.subblock(1, 1, _height-1, _width-1);
+      Matrix<T> B = (col1.Householder_canon() * (*this)).subblock(1, 1, _height-1, _width-1);
 
       // rekursivne QR na B
       SqrMtrx<T> Q2;
       Matrix<T> R2;
-
       B.QR(Q2, R2);
 
       // sestaveni R z R2
+      Matrix<T> tmp = col1.Householder_canon() * (*this);
       T * R_val = new T [_height*_width];
       unsigned idx = 0;
       for (int i = 0; i < _width; i++) {                // 1. radek
@@ -498,7 +496,7 @@ namespace mtrx {
         }
       }
       SqrMtrx<T> newQ(*_fld, _height, Q_val);
-      Q = H.transpose() * newQ;
+      Q = col1.Householder_canon().transpose() * newQ;
     }
   }
   // =================================/PRO QR-ROZKLAD============================================

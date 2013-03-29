@@ -179,7 +179,7 @@ namespace mtrx {
     }
     Matrix gauss_elim() const;                                              // Gaussova eliminace
     Matrix gauss_jord_elim() const;                                         // Gaussova-Jordanova eliminace O(n^3)
-    void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice
+    void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice - [TO BE DONE]
     void QR(SqrMtrx<T> & Q, Matrix & R) const;                              // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
     
