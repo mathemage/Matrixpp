@@ -132,7 +132,7 @@ namespace mtrx {
       }
     }
 
-    // ============================KANONICKA FORMA===============================
+    // ============================KANONICKA ČÁST===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
     Matrix(const Field<T> & fld, unsigned h, unsigned w, T * values);
     Matrix & operator=(const Matrix & m);       // prirazeni
@@ -141,7 +141,7 @@ namespace mtrx {
       *this = m;
     }
     ~Matrix() { if (0 != _values) delete [] _values; }
-    // ===========================/KANONICKA FORMA===============================
+    // ===========================/KANONICKA ČÁST===============================
     
     // ============================NORMA: iteratory===============================
     // iteratory z pointeru (bidirectional)
@@ -155,8 +155,8 @@ namespace mtrx {
     typedef const T & const_reference;
     typedef ptrdiff_t difference_type;
     typedef difference_type size_type;
-    const_iterator begin() const { return _values; }
     iterator begin() { return _values; }
+    const_iterator begin() const { return _values; }
     iterator end() { return _values + _height * _width; }
     const_iterator end() const { return _values + _height * _width; }
     const_iterator cbegin() const { return const_cast<Matrix const &>(*this).begin(); }
@@ -178,8 +178,6 @@ namespace mtrx {
       return col;
     }
     Matrix round_to_zeroes() const;                                         // zaokrouhleni cisel blizkych nule
-    Matrix gauss_elim() const;                                              // Gaussova eliminace
-    Matrix gauss_jord_elim() const;                                         // Gaussova-Jordanova eliminace O(n^3)
     void LUP(Matrix & L, Matrix & U, Matrix & P) const;                     // LUP dekomposice - [TO BE IMPLEMENTED]
     void QR(SqrMtrx<T> & Q, Matrix & R) const;                              // QR dekomposice
     // ===========================/MATICOVE OPERACE===============================
@@ -189,14 +187,13 @@ namespace mtrx {
     friend istream & operator>> <>(istream & in, Matrix<T> & m);
   };
     
-  // prohozeni dvou matic
+  // prohozeni dvou matic -- zapis "swap(a, b)" namisto "a.swap(b)" pro moznou konversi
   template<typename T> void swap(Matrix<T> & lhs, Matrix<T> & rhs) { lhs.swap(rhs); }
   // soucet dvou matic
   template<typename T> Matrix<T> operator+(const Matrix<T> & x, const Matrix<T> & y);
   // rozdil dvou matic
   template<typename T> Matrix<T> operator-(const Matrix<T> & x, const Matrix<T> & y);
   // soucin dvou matic
-  // ??? kontrola rozmeru + dle formule / Strassen ???
   template<typename T> Matrix<T> operator*(const Matrix<T> & x, const Matrix<T> & y);
 
   // VEKTOR Z MATICE
@@ -219,12 +216,12 @@ namespace mtrx {
       }
     }
 
-    // ============================KANONICKA FORMA===============================
+    // ============================KANONICKA ČÁST===============================
     // defaultni konstruktor - implicitni sirka 1
     Vect(const Field<T> & fld, unsigned h, T * values);
     Vect & operator=(const Vect & v);           // prirazeni
     Vect(const Vect & v) : Matrix<T>(v) { }     // copy-constructor
-    // ===========================/KANONICKA FORMA===============================
+    // ===========================/KANONICKA ČÁST===============================
     
     operator Matrix<T>() {                      // conversion operator
       Matrix<T> m(_fld, _height, 1, _values);
@@ -267,12 +264,12 @@ namespace mtrx {
       }
     }
 
-    // ============================KANONICKA FORMA===============================
+    // ============================KANONICKA ČÁST===============================
     // defaultni konstruktor - implicitne stejne rozmery
     SqrMtrx(const Field<T> & fld, unsigned dim, T * values);
     SqrMtrx & operator=(const SqrMtrx & r);           // prirazeni
     SqrMtrx(const SqrMtrx & v) : Matrix<T>(v) { }     // copy-constructor
-    // ===========================/KANONICKA FORMA===============================
+    // ===========================/KANONICKA ČÁST===============================
     
     operator Matrix<T>() {                         // conversion operator
       Matrix<T> m(_fld, _height, _height, _values);

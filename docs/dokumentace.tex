@@ -121,7 +121,7 @@ jiného tělesa pro prvky.
 
 TBD \ldots
 
-\section{Třída Matrixpp}
+\section{Třída Matrix}
 
 Nejobecnější kontejner matic - příslušné těleso zadáváno formou jednoho z
 atributů.
@@ -158,13 +158,68 @@ $\mathbb{R}$.)
       \item \verb=get_width= \ldots vrací počet sloupců matice
       \item \verb=at= \ldots vrací hodnotu prvku na zadaných
         indexech\thinspace%
-        \footnote{počítáno od $(0,0)$ jako po zbytek textu}
+        \footnote{počítáno od $(0,0)$ stejně jako po zbytek textu}
       \item \verb=is_valid= \ldots ověřuje korektnost matice (virtuální funkce:
         vy\-u\-ži\-tel\-né pro potomky třeba při kontrolách rozměrů či
         regularity)
+      \item \emph{kanonická část\/} \ldots defaultní konstruktor, operátor
+        přiřazení, \uv{copy-constructor}, destruktor
+      \item \verb=iterator=, \verb=const_iterator= \ldots iterátory vytvořené
+        z~\emph{pointerů\/}
+      \item \verb=value_type= \ldots datový typ prvku matice (implicitně:
+        \verb=double=)
+      \item \verb=reference=, \verb=const_reference= \ldots reference na~prvek
+        matice
+      \item \verb=difference_type=, \verb=size_type= \ldots paměťová velikost
+        prvku matice
+      \item \verb=begin=, \verb=cbegin= \ldots prvek levého horního roh matice
+      \item \verb=end=, \verb=cend= \ldots konec se nachází
+        \emph{za\/}\thinspace%
+        \footnote{obdobně jako u všech iterátorů}
+        ~prvkem pravého dolního rohu matice
+      \item \verb~operator==~, \verb~operator!=~ \ldots porovnání matic: stejné
+        rozměry + stejné těleso + prvek po prvku
+      \item \verb~swap~ \ldots prohození dvou matic (včetně rozměrů a těles)
+      \item \verb~size~, \verb~max_size~ \ldots počet prvků matice (podle
+        \verb~_values~)
+      \item \verb~empty~ \ldots prázdná matice (\verb=begin= a \verb=end=
+        splývají)
+      \item \verb~mul_by_scal~ \ldots vynásobení každého prvku matice skalárem
+      \item \verb~transpose~ \ldots vrací novou matici jako transposici původní
+      \item \verb~subblock~ \ldots vrací souvislou podmatici (při zadání levého
+        horního a pravého dolní rohu požadovaného obdélníku)
+      \item \verb~column~ \ldots vrací sloupcový vektor matice
+      \item \verb~round_to_zeroes~ \ldots vrací matici, v níž jsou prvky blízké
+        nule na nulu \uv{za\-o\-krouh\-le\-ny} (pro numerické ustálení
+        u~\emph{QR algoritmu\/})
+      \item (\verb~LUP~ \ldots \emph{LUP dekomposice\/} stále zbývá
+        k~naimplementování)
+      \item \verb~QR(SqrMtrx<T> & Q, Matrix & R)~ \ldots vrací \emph{QR
+      faktorisaci\/} skrze úpravy referencí na~\verb~Q~ a~\verb~R~.
+      \item \verb~operator>>~, \verb~operator<<~ \ldots vstup\thinspace%
+        \footnote{zadávají se výška, šířka a samotné prvky matice}
+        a výstup z/do~\verb~iostream~ objektu
     \end{itemize}
   \end{itemize}
+  \item Funkce třídu využívající
+    \begin{itemize}
+    \item Pomocné
+      \begin{itemize}
+      \item \verb~swap~ \ldots prohození dvou matic (binární zápis namísto
+        zápisu unárního)
+      \end{itemize}
+    \item Aritmetické
+      \begin{itemize}
+      \item \verb~operator+~, \verb~operator-~, \verb~operator*~ \ldots součet,
+        rozdíl, součin\thinspace%
+        \footnote{metodou dle definice: časová složitost $\mathcal{O}(m \cdot n
+        \cdot k)$ pro součin rozměrů $(m \times k)$ s~$(k \times n)$}
+        dvou matic
+      \end{itemize}
+    \end{itemize}
 \end{itemize}
+
+\section{Třída Vect}
 
 Dále bude nad digrafy možné provádět následující operace:
 
@@ -982,13 +1037,16 @@ Bye bye...
 
 \part{Závěr}
 
-Autor musí podotknout, že se nabízí nemalé množství prostoru pro vylepšení:
+Nabízí se nemalé množství prostoru pro vylepšení:
 \begin{enumerate}
   \item {\bf Násobení matic\/} přímo podle definice není nejefektivnější.
     Lze vylepšit přepsáním funkce
 \begin{verbatim}template<typename T>
 Matrix<T> operator*(const Matrix<T> &, const Matrix<T> &);\end{verbatim}
     např. pomocí \emph{Strassenova algoritmu\/}.
+  \item {\bf LUP rozklad\/} byl vynechán, neboť jeho využitelnost je možno
+    do\-sta\-teč\-ně uspokojivě nahradit \emph{QR rozkladem\/}.
+    Přesto však autor vřele uvítá jakékoli snahy o~toto rozšíření.
 \end{enumerate}
 
 \pagebreak
