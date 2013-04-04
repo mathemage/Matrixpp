@@ -74,7 +74,7 @@ namespace mtrx {
   // =================================vyjimky===================================
 
   // =================================interface===================================
-  // INTERFACE PRO T <- uzavrenost na +,-,* 
+  // INTERFACE PRO T <- teleso: uzavrenost na +,-,* 
   template<typename T>
   struct Field {
     const T _zero;

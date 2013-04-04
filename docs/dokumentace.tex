@@ -20,6 +20,7 @@
 \newcommand{\mpp}{\textsc{Matrix++}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\V}{\mathbf{v}}
+\newcommand{\x}{\mathbf{x}}
 
 \hyphenation{ma-ti-ce}
 
@@ -120,6 +121,11 @@ Matice bude representována šablonovanou třídou a bude brát v potaz zadání
 jiného tělesa pro prvky.
 
 \section{Struktura Field}
+
+Šablonovaná struktura pro definici maticového tělesa\thinspace%
+\footnote{matematické struktury $\mathbb{F} = (0, 1, -, +, \times, ^{-1})$
+splňující jisté axiómy (např. asociativitu, komutativitu, distributivitu,
+\ldots)}
 
 TBD \ldots
 
@@ -267,16 +273,22 @@ template<typename T=double> class Vect : public Matrix<T>;
     \item \verb=norm_squared= \ldots hodnota skalárního součinu
       $\V^T\V$\thinspace%
       \footnote{neboli druhá mocnina $L_2$-normy v~$\R^n$}
-    \item \verb=e1_reflection= \ldots reflexe vektoru~$\V$ do~$e_1$, tj.~vektor
+    \item \verb=e1_reflection= \ldots reflexe vektoru~$\x$ do~$e_1$, tj.~vektor
       \[
         \begin{pmatrix}
-          ||\V|| \\
+          ||\x|| \\
           0 \\
           \vdots \\
           0
         \end{pmatrix}
       \]
       pro normu $||\cdot||\colon \R^n \to \R$.
+      Názorně:
+
+      \begin{center}
+      \includegraphics[width=0.4\textwidth]{./householder_reflection.png}
+      \end{center}
+
       (Implementováno pro šablonu se~specializovaným typem \verb=double=.)
     \item \verb=Householder= \ldots matice \emph{Householderovy reflexe\/}
       \[
