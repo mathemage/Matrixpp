@@ -3,7 +3,7 @@
 \usepackage[czech]{babel}
 %\usepackage{amsfonts}
 %\usepackage{amsthm}
-%\usepackage{amsmath}
+\usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[pdftex]{graphicx}
 %\usepackage{enumerate}
@@ -18,6 +18,8 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\cpp}{\textsc{C++}}
 \newcommand{\mpp}{\textsc{Matrix++}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\V}{\mathbf{v}}
 
 \hyphenation{ma-ti-ce}
 
@@ -130,116 +132,209 @@ Hlavička je
 template<typename T=double> class Matrix;
 \end{verbatim}
 (implicitní \verb=double= jest nastaven pro nejběžnější účely matic nad tělesem
-$\mathbb{R}$.)
+$\R$.)
 
-\renewcommand{\labelitemi}{$\clubsuit$}
-\renewcommand{\labelitemii}{$\heartsuit$}
-\renewcommand{\labelitemiii}{$\spadesuit$}
+\renewcommand{\labelitemi}{$\heartsuit$}
+\renewcommand{\labelitemii}{$\spadesuit$}
+\renewcommand{\labelitemiii}{$\clubsuit$}
+
+\subsection{Členské atributy}
 
 \begin{itemize}
-  \item Členské atributy
+  \item soukromé
   \begin{itemize}
-    \item privátní
-    \begin{itemize}
-      \item \verb=_height= \ldots počet řádků matice
-      \item \verb=_width= \ldots počet sloupců matice
-      \item \verb=_values= \ldots 1-D pole obsahující samotné prvky matice
-    \end{itemize}
-    \item veřejné
-    \begin{itemize}
-      \item \verb=_fld= \ldots ukazatel na maticové těleso
-    \end{itemize}
+    \item \verb=_height= \ldots počet řádků matice
+    \item \verb=_width= \ldots počet sloupců matice
+    \item \verb=_values= \ldots 1-D pole obsahující samotné prvky matice
   \end{itemize}
-  \item Členské metody
+  \item veřejné
   \begin{itemize}
-    \item veřejné
-    \begin{itemize}
-      \item \verb=get_height= \ldots vrací počet řádků matice
-      \item \verb=get_width= \ldots vrací počet sloupců matice
-      \item \verb=at= \ldots vrací hodnotu prvku na zadaných
-        indexech\thinspace%
-        \footnote{počítáno od $(0,0)$ stejně jako po zbytek textu}
-      \item \verb=is_valid= \ldots ověřuje korektnost matice (virtuální funkce:
-        vy\-u\-ži\-tel\-né pro potomky třeba při kontrolách rozměrů či
-        regularity)
-      \item \emph{kanonická část\/} \ldots defaultní konstruktor, operátor
-        přiřazení, \uv{copy-constructor}, destruktor
-      \item \verb=iterator=, \verb=const_iterator= \ldots iterátory vytvořené
-        z~\emph{pointerů\/}
-      \item \verb=value_type= \ldots datový typ prvku matice (implicitně:
-        \verb=double=)
-      \item \verb=reference=, \verb=const_reference= \ldots reference na~prvek
-        matice
-      \item \verb=difference_type=, \verb=size_type= \ldots paměťová velikost
-        prvku matice
-      \item \verb=begin=, \verb=cbegin= \ldots prvek levého horního roh matice
-      \item \verb=end=, \verb=cend= \ldots konec se nachází
-        \emph{za\/}\thinspace%
-        \footnote{obdobně jako u všech iterátorů}
-        ~prvkem pravého dolního rohu matice
-      \item \verb~operator==~, \verb~operator!=~ \ldots porovnání matic: stejné
-        rozměry + stejné těleso + prvek po prvku
-      \item \verb~swap~ \ldots prohození dvou matic (včetně rozměrů a těles)
-      \item \verb~size~, \verb~max_size~ \ldots počet prvků matice (podle
-        \verb~_values~)
-      \item \verb~empty~ \ldots prázdná matice (\verb=begin= a \verb=end=
-        splývají)
-      \item \verb~mul_by_scal~ \ldots vynásobení každého prvku matice skalárem
-      \item \verb~transpose~ \ldots vrací novou matici jako transposici původní
-      \item \verb~subblock~ \ldots vrací souvislou podmatici (při zadání levého
-        horního a pravého dolní rohu požadovaného obdélníku)
-      \item \verb~column~ \ldots vrací sloupcový vektor matice
-      \item \verb~round_to_zeroes~ \ldots vrací matici, v níž jsou prvky blízké
-        nule na nulu \uv{za\-o\-krouh\-le\-ny} (pro numerické ustálení
-        u~\emph{QR algoritmu\/})
-      \item (\verb~LUP~ \ldots \emph{LUP dekomposice\/} stále zbývá
-        k~naimplementování)
-      \item \verb~QR(SqrMtrx<T> & Q, Matrix & R)~ \ldots vrací \emph{QR
-      faktorisaci\/} skrze úpravy referencí na~\verb~Q~ a~\verb~R~.
-      \item \verb~operator>>~, \verb~operator<<~ \ldots vstup\thinspace%
-        \footnote{zadávají se výška, šířka a samotné prvky matice}
-        a výstup z/do~\verb~iostream~ objektu
-    \end{itemize}
+    \item \verb=_fld= \ldots ukazatel na maticové těleso
   \end{itemize}
-  \item Funkce třídu využívající
-    \begin{itemize}
-    \item Pomocné
-      \begin{itemize}
-      \item \verb~swap~ \ldots prohození dvou matic (binární zápis namísto
-        zápisu unárního)
-      \end{itemize}
-    \item Aritmetické
-      \begin{itemize}
-      \item \verb~operator+~, \verb~operator-~, \verb~operator*~ \ldots součet,
-        rozdíl, součin\thinspace%
-        \footnote{metodou dle definice: časová složitost $\mathcal{O}(m \cdot n
-        \cdot k)$ pro součin rozměrů $(m \times k)$ s~$(k \times n)$}
-        dvou matic
-      \end{itemize}
-    \end{itemize}
+\end{itemize}
+
+\subsection{Členské metody}
+
+\begin{itemize}
+  \item veřejné
+  \begin{itemize}
+    \item \verb=get_height= \ldots vrací počet řádků matice
+    \item \verb=get_width= \ldots vrací počet sloupců matice
+    \item \verb=at= \ldots vrací hodnotu prvku na zadaných
+      indexech\thinspace%
+      \footnote{počítáno od $(0,0)$ stejně jako po zbytek textu}
+    \item \verb=is_valid= \ldots ověřuje korektnost matice (virtuální funkce:
+      vy\-u\-ži\-tel\-né pro potomky třeba při kontrolách rozměrů či
+      regularity)
+    \item \emph{kanonická část\/} \ldots defaultní konstruktor, operátor
+      přiřazení, \uv{copy-constructor}, destruktor
+    \item \verb=iterator=, \verb=const_iterator= \ldots iterátory vytvořené
+      z~\emph{pointerů\/}
+    \item \verb=value_type= \ldots datový typ prvku matice (implicitně:
+      \verb=double=)
+    \item \verb=reference=, \verb=const_reference= \ldots reference na~prvek
+      matice
+    \item \verb=difference_type=, \verb=size_type= \ldots paměťová velikost
+      prvku matice
+    \item \verb=begin=, \verb=cbegin= \ldots prvek levého horního roh matice
+    \item \verb=end=, \verb=cend= \ldots konec se nachází
+      \emph{za\/}\thinspace%
+      \footnote{obdobně jako u všech iterátorů}
+      ~prvkem pravého dolního rohu matice
+    \item \verb~operator==~, \verb~operator!=~ \ldots porovnání matic: stejné
+      rozměry + stejné těleso + prvek po prvku
+    \item \verb~swap~ \ldots prohození dvou matic (včetně rozměrů a těles)
+    \item \verb~size~, \verb~max_size~ \ldots počet prvků matice (podle
+      \verb~_values~)
+    \item \verb~empty~ \ldots prázdná matice (\verb=begin= a \verb=end=
+      splývají)
+    \item \verb~mul_by_scal~ \ldots vynásobení každého prvku matice skalárem
+    \item \verb~transpose~ \ldots vrací novou matici jako transposici původní
+    \item \verb~subblock~ \ldots vrací souvislou podmatici (při zadání levého
+      horního a pravého dolní rohu požadovaného obdélníku)
+    \item \verb~column~ \ldots vrací sloupcový vektor matice
+    \item \verb~round_to_zeroes~ \ldots vrací matici, v níž jsou prvky blízké
+      nule na nulu \uv{za\-o\-krouh\-le\-ny} (pro numerické ustálení
+      u~\emph{QR algoritmu\/})
+    \item (\verb~LUP~ \ldots \emph{LUP dekomposice\/} stále zbývá
+      k~naimplementování)
+    \item \verb~QR(SqrMtrx<T> & Q, Matrix & R)~ \ldots vrací \emph{QR
+    faktorisaci\/} skrze úpravy referencí na~\verb~Q~ a~\verb~R~.
+    \item \verb~operator>>~, \verb~operator<<~ \ldots vstup\thinspace%
+      \footnote{zadávají se výška, šířka a samotné prvky matice}
+      a výstup z/do~\verb~iostream~ objektu
+  \end{itemize}
+\end{itemize}
+
+\subsection{Ostatní funkce}
+
+\begin{itemize}
+\item Pomocné
+  \begin{itemize}
+  \item \verb~swap~ \ldots prohození dvou matic (binární zápis namísto
+    zápisu unárního)
+  \end{itemize}
+\item Aritmetické
+  \begin{itemize}
+  \item \verb~operator+~, \verb~operator-~, \verb~operator*~ \ldots součet,
+    rozdíl, součin\thinspace%
+    \footnote{metodou dle definice: časová složitost $\mathcal{O}(m \cdot n
+    \cdot k)$ pro součin matic o rozměrech $m \times k$ a~$k \times n$.}
+    dvou matic
+  \end{itemize}
 \end{itemize}
 
 \section{Třída Vect}
 
-Dále bude nad digrafy možné provádět následující operace:
+Veřejný potomek třídy \verb=Matrix=.
+Jedná se kontejner sloupcových vektorů, tj.~matic obecně rozměrů $n\times 1$.
+Hlavička je
+\begin{verbatim}
+template<typename T=double> class Vect : public Matrix<T>;
+\end{verbatim}
 
-\renewcommand{\labelitemi}{$\clubsuit$}
+\subsection{Členské atributy}
 
 \begin{itemize}
-\item \textbf{Sym} orientující každou hranu digrafu {\sl do obou směrů\/}.
-\item \textbf{Dijkstra} hledající vzdálenosti (tj.\ délky nejkratších cest) od
-zadaného vrcholu ke všem ostatním vrcholům digrafu.
-\item \textbf{Floyd-Warshall} hledající vzdálenosti mezi každými dvěma vrcholy
-digrafu.
-\item \textbf{Tarjan} hledající komponenty silné souvislosti za pomoci
-Tarjanova algoritmu.
-\item \textbf{TSort} hledající topologické uspořádání a v případě neexistence
-výpis o přítomnosti cyklu v digrafu.%
-\footnote{Což je ekvivalentní s neexistencí topologického uspořádání v digrafu.}
-\item \textbf{Closure} hledající transitivní uzávěr digrafu.
-\item \textbf{Reduction} hledající transitivní redukci digrafu.%
-\footnote{Pozn. autora: Tato implementace zatím zvládá jen transitivní redukci
-  v acyklických grafech.}
+  \item soukromé
+  \begin{itemize}
+    \item \verb=_height=, \verb=_width=, \verb=_values= \ldots zděděné po
+      třídě~\verb=Matrix=
+  \end{itemize}
+  \item veřejné
+  \begin{itemize}
+    \item \verb=_fld= \ldots zděděné po třídě~\verb=Matrix=
+  \end{itemize}
+\end{itemize}
+
+\subsection{Členské metody}
+
+\begin{itemize}
+  \item veřejné
+  \begin{itemize}
+    \item \verb=begin=, \verb=transpose= \ldots zděděné po třídě~\verb=Matrix=
+    \item \verb=is_valid= \ldots kontroluje rozměry (sloupcových vektorů),
+      případně spustí výjimku \verb=NotAVectorException=
+    \item \emph{kanonická část\/} \ldots defaultní konstruktor, operátor
+      přiřazení, \uv{copy-constructor}
+    \item \verb=operator Matrix()= \ldots konversní operátor z~\verb=Vect=
+      na~\verb=Matrix=
+    \item \verb=Vect(const Matrix & m)= \ldots konversní konstruktor
+      z~\verb=Matrix= na~\verb=Vect= (s~kontrolou na~rozměry)
+    \item \verb=outer_product= \ldots čtvercová matice součinu $\V\V^T$
+    \item \verb=inner_product= \ldots matice rozměrů $1\times 1$ součinu
+      $\V^T\V$
+    \item \verb=norm_squared= \ldots hodnota skalárního součinu
+      $\V^T\V$\thinspace%
+      \footnote{neboli druhá mocnina $L_2$-normy v~$\R^n$}
+    \item \verb=e1_reflection= \ldots reflexe vektoru~$\V$ do~$e_1$, tj.~vektor
+      \[
+        \begin{pmatrix}
+          ||\V|| \\
+          0 \\
+          \vdots \\
+          0
+        \end{pmatrix}
+      \]
+      pro normu $||\cdot||\colon \R^n \to \R$.
+      (Implementováno pro šablonu se~specializovaným typem \verb=double=.)
+    \item \verb=Householder= \ldots matice \emph{Householderovy reflexe\/}
+      \[
+        \mathbf{H}(\V) = \mathbf{I}_n - \frac{2}{\V^T\V}\V\V^T
+      \]
+    \item \verb=Householder_canon= \ldots matice zobrazující $\V$ do vektoru
+      z~metody \verb=e1_reflection=\thinspace%
+      \footnote{konkrétně $||\V||\cdot \mathbf{e}_1$}
+      \[
+        \mathbf{H} :=
+        \begin{cases}
+          \mathbf{I}_n &\mbox{iff } \V = ||\V||\cdot \mathbf{e}_1 \\
+          \mathbf{H}(\V - ||\V||\cdot \mathbf{e}_1) & \mbox{jinak}
+        \end{cases}
+      \]
+  \end{itemize}
+\end{itemize}
+
+\section{Třída SqrMtrx}
+
+Veřejný potomek třídy \verb=Matrix=.
+Jedná se kontejner čtvercových matic, tj.~matic obecně rozměrů $n\times n$.
+Hlavička je
+\begin{verbatim}
+template<typename T=double> class SqrMtrx : public Matrix<T>;
+\end{verbatim}
+
+\subsection{Členské atributy}
+
+\begin{itemize}
+  \item soukromé
+  \begin{itemize}
+    \item \verb=_height=, \verb=_width=, \verb=_values= \ldots zděděné po
+      třídě~\verb=Matrix=
+  \end{itemize}
+  \item veřejné
+  \begin{itemize}
+    \item \verb=_fld= \ldots zděděné po třídě~\verb=Matrix=
+  \end{itemize}
+\end{itemize}
+
+\subsection{Členské metody}
+
+\begin{itemize}
+  \item veřejné
+  \begin{itemize}
+    \item \verb=begin=, \verb=transpose= \ldots zděděné po třídě~\verb=Matrix=
+    \item \verb=is_valid= \ldots kontroluje rozměry (čtvercových matic),
+      případně spustí výjimku \verb=NotASqrMtrxException=
+    \item \emph{kanonická část\/} \ldots defaultní konstruktor, operátor
+      přiřazení, \uv{copy-constructor}
+    \item \verb=operator Matrix()= \ldots konversní operátor ze~\verb=SqrMtrx=
+      na~\verb=Matrix=
+    \item \verb=SqrMtrx(const Matrix & m)= \ldots konversní konstruktor
+      z~\verb=Matrix= na~\verb=SqrMtrx= (s~kontrolou na~rozměry)
+    \item \verb=QR_algorithm= \ldots spuštění \emph{QR metody\/} \cite{qr-meth}
+      na~aktuální objekt matice čtvercových rozměrů při~zadaném počtu iterací
+  \end{itemize}
 \end{itemize}
 
 \section{Algoritmy a datové struktury}
@@ -1055,6 +1150,15 @@ Matrix<T> operator*(const Matrix<T> &, const Matrix<T> &);\end{verbatim}
 
 \bibitem{iso-norma}
 Norma \textsc{ISO/IEC N3290} programovacího jazyka \cpp.
+
+\bibitem{qr-meth}
+  {\sc Kublanovskaya}, Vera N.
+  On some algorithms for the solution of the complete eigenvalue problem.
+  In: \emph{USSR Computational Mathematics and Mathematical Physics\/}.
+  1963,
+  no.~3,
+  vol.~8,
+  pp.~637-657.
 
 \end{thebibliography}
 

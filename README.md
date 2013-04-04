@@ -3,4 +3,4 @@ Matrix++ = C++ template library for manipulation with matrices represented as co
 ========================================================================================
 
 Supported features:
-- LUP factorization
+- QR factorization

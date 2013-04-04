@@ -204,8 +204,8 @@ namespace mtrx {
     using Matrix<T>::_height;
     using Matrix<T>::_width;
     using Matrix<T>::_values;
-    using Matrix<T>::_fld;
   public:
+    using Matrix<T>::_fld;
     using Matrix<T>::begin;
     using Matrix<T>::transpose;
     bool is_valid() {                           // viz operator>>
@@ -254,8 +254,8 @@ namespace mtrx {
     using Matrix<T>::_height;
     using Matrix<T>::_width;
     using Matrix<T>::_values;
-    using Matrix<T>::_fld;
   public:
+    using Matrix<T>::_fld;
     virtual bool is_valid() {                   // viz operator>>
       if (_height == _width) {
         return true;
