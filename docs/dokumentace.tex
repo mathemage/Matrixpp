@@ -1,5 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
 \usepackage[czech]{babel}
 %\usepackage{amsfonts}
 %\usepackage{amsthm}
@@ -23,6 +24,12 @@
 \newcommand{\x}{\mathbf{x}}
 
 \hyphenation{ma-ti-ce}
+%\hyphenation{ša-blo-no-va-nou}
+\hyphenation{o-pe-ra-ce}
+
+\renewcommand{\labelitemi}{$\heartsuit$}
+\renewcommand{\labelitemii}{$\spadesuit$}
+\renewcommand{\labelitemiii}{$\clubsuit$}
 
 \begin{document}
 
@@ -117,15 +124,80 @@ QR rozkladu pro hledání vlastních čísel).
 \section{Přesné zadání}
 Implementace běžných operací s maticemi (sčítání, násobení, inverze,
 determinant) použitím efektivních algoritmů. 
-Matice bude representována šablonovanou třídou a bude brát v potaz zadání
-jiného tělesa pro prvky.
+Matice bude representována ša\-blo\-no\-va\-nou třídou a bude brát v potaz
+zadání jiného tělesa pro prvky.
 
 \section{Struktura Field}
 
-Šablonovaná struktura pro definici maticového tělesa\thinspace%
+Šablonovaná struktura s~účelem rozhraní pro definici maticového
+tělesa.\thinspace%
 \footnote{matematické struktury $\mathbb{F} = (0, 1, -, +, \times, ^{-1})$
-splňující jisté axiómy (např. asociativitu, komutativitu, distributivitu,
-\ldots)}
+splňující jisté axiómy (asociativitu, komutativitu, distributivitu a další)}
+Hlavička je
+\begin{verbatim}
+template<typename T> struct Field;
+\end{verbatim}
+
+\subsection{Členské atributy}
+
+\begin{itemize}
+  \item základní
+  \begin{itemize}
+    \item \verb=_zero= \ldots neutrální prvek sčítání
+    \item \verb=_one= \ldots neutrální prvek násobení
+    \item \verb=(*_minus)(const T &)= \ldots inversní prvek vzhledem ke sčítání
+    \item \verb=(*_reciprocal)(const T &)= \ldots inversní prvek vzhledem k
+      násobení
+    \item \verb=(*_plus)(const T &, const T &)= \ldots binární operace sčítání
+    \item \verb=(*_times)(const T &, const T &)= \ldots binární operace
+      násobení
+  \end{itemize}
+  \item rozšířené
+  \begin{itemize}
+    \item \verb=(*_equals)(const T &, const T &)= \ldots rovnost dvou prvků z
+      tělesa (např. pro $\mathbb{Z}_p$ se jedná o $a \equiv b \pmod p$)
+  \end{itemize}
+\end{itemize}
+
+\subsection{Členské metody}
+
+\begin{itemize}
+  \item kanonické
+  \begin{itemize}
+    \item \verb=Field(...)= konstruktor s~parametry $(0, 1, -, ^{-1}, +,
+      \times, =)$
+  \end{itemize}
+  \item pomocné
+  \begin{itemize}
+    \item \verb=_rec(const T &)= \ldots inversní prvek vzhledem k násobení,
+      navíc spustí výjimku \verb=InverseOfNullException= při pokusu o~inversi
+      nulového prvku
+    \item \verb=subtract(const T &, const T &)= \ldots binární minus jako
+      \[
+        a - b := a + (-b)
+      \]
+  \end{itemize}
+\end{itemize}
+
+\subsection{Předdefinovaná tělesa}
+ 
+Autor předdefinoval v~souboru \verb=matrix.tpp= následující příklady těles:
+\begin{itemize}
+  \item \verb=Field<double> fld_reals= \ldots standardní těleso $\R$ definované
+    nad~datovým typem \verb=double=
+  \item \verb=Field<int> pf= \ldots konečné těleso isomorfní cyklické grupě
+    $\mathbb{Z}_p$\thinspace%
+    \footnote{z~důvodu efektivity není ovšem kontrolováno, zda-li je $p$
+    prvočíslo}
+    \begin{itemize}
+      \item definované nad~datovým typem \verb=int=
+      \item operace jsou prováděny \emph{modulo $p$\/}
+      \item invers pro~násobení implementován skrze \emph{Bézoutovy
+        koeficienty\/} využitím \emph{Euklidova algoritmu\/}
+    \end{itemize}
+\end{itemize}
+
+Poznámka: 
 
 TBD \ldots
 
@@ -139,10 +211,6 @@ template<typename T=double> class Matrix;
 \end{verbatim}
 (implicitní \verb=double= jest nastaven pro nejběžnější účely matic nad tělesem
 $\R$.)
-
-\renewcommand{\labelitemi}{$\heartsuit$}
-\renewcommand{\labelitemii}{$\spadesuit$}
-\renewcommand{\labelitemiii}{$\clubsuit$}
 
 \subsection{Členské atributy}
 
