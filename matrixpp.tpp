@@ -149,7 +149,6 @@ namespace mtrx {
   template<typename T>
   istream & operator>>(istream & in, Matrix<T> & m) {
     // rozmery
-    // ??? vyjimka pro kontrolu ???
     in >> m._height >> m._width;
 
     // polozky

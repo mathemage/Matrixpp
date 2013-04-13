@@ -8,15 +8,8 @@
 ******************************************************************************/
 #include "all.hpp"
 
-int main(int argc, const char* argv[]) {
-  vector<string> args(argv, argv+argc);
-  
-  cout << "Matrix++ run with arguments: ";
-  for (int i = 0; i < args.size(); i++) {
-    cout << args[i] << endl;
-  }
-
-  Matrix<int> m(pf);
+int main() {
+  Matrix<> m;
   cin >> m;
   cout << m << endl;
   

@@ -349,12 +349,12 @@ template<typename T=double> class Vect : public Matrix<T>;
       \footnote{neboli druhá mocnina $L_2$-normy v~$\R^n$}
     \item \verb=e1_reflection= \ldots reflexe vektoru~$\x$ do~$e_1$, tj.~vektor
       \[
-        \begin{pmatrix}
+        \begin{bmatrix}
           ||\x|| \\
           0 \\
           \vdots \\
           0
-        \end{pmatrix}
+        \end{bmatrix}
       \]
       pro normu $||\cdot||\colon \R^n \to \R$.
       Názorně:
@@ -456,54 +456,71 @@ Tyto se nacházejí v~souborech tvaru \verb=[jmeno].cpp= a s~pomocí přiložen�
 $ make [jmeno].exe
 \end{verbatim}
 
-\section{Program io.exe}
+\section{Program io.exe} \label{io.exe}
 
-TBD
-
-Při spuštění obsluhy nás uvítá zpráva o aktuální versi ovládacího programu:
-
-\vskip .25cm
-{\tt
-\noindent Welcome to GraphAlpha v1.3! \\
-\noindent This is a demonstration program of GraphAlpha library.
-}
-\vskip .25cm
-
-\noindent Následuje dotaz na parametry vstupního grafu:
-\vskip .25cm
-{\tt
-\noindent Enter count of nodes: {\bf 3} \\
-\noindent Enter count of arcs: {\bf 2}
-}
-\vskip .25cm
-
-Program se poté zeptá na detaily jednotlivých hran:
-
-\begin{verbatim}
-1. node
- From:  
- To:  
- Weight:
-2. node
- From:  
- To:
- Weight: 
-\end{verbatim}
-
-Jedná se o následující údaje:
-\renewcommand{\labelitemi}{$\propto$}
+Tato část testuje vstupně/výstupní operace.
+Na standardním vstupu (pomocí objektu \verb=cin=) přijme následující údaje o
+matici:
 \begin{itemize}
-\item {\sl From:\/} výstupní vrchol, ze kterého zadávaná hrana vede
-\item {\sl To:\/} vstupní vrchol, do kterého zadávaná hrana vede
-\item {\sl Weight:\/} váha (popř. cena), zadávané hrany
+\item počet řádků $m$
+\item počet sloupců $n$
+\item hodnoty jednotlivých položek $a_{i,j}$ (po řádcích, zleva doprava)
 \end{itemize}
+Na standardní výstup (pomocí objektu \verb=cout=) vypíše hodnoty matice
+ve~tvaru:
+\[
+  \begin{bmatrix}
+    a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+    a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+    \vdots  & \vdots  & \ddots & \vdots  \\
+    a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+  \end{bmatrix}
+\]
 
-Každá hrana obsahuje návěští s pořadovým číslem zadávané hrany.
+\section{Program arithmetics.exe}
 
-Nakonec nabídne aplikace nabídku poskytovaných příkazů.
-Tyto lze spatřit na následující stránce $\dots$
+Program demonstruje elementární a~některé pomocné operace nad~maticemi:
+Nejprve jsou zadány vstupní matice (formát viz Sekce~\ref{io.exe}\thinspace):
+\begin{enumerate}
+\item celočíselná matice $A$ (nad tělesem $\mathbb{Z}_5$ při hodnotě proměnné
+  \verb~_order_ = 5~)
+\item reálná matice $B$ (nad tělesem $\mathbb{R}$)
+\item celočíselná matice $C$ (nad tělesem $\mathbb{Z}_5$ při hodnotě proměnné
+  \verb~_order_ = 5~)
+\item reálná matice $D$ (nad tělesem $\mathbb{R}$)
+\item celočíselná matice $E$ (nad tělesem $\mathbb{Z}_5$ při hodnotě proměnné
+  \verb~_order_ = 5~)
+\end{enumerate}
+Dále jsou předvedeny následující funkce:
+\begin{enumerate}
+\item \verb~empty()~ \ldots ověří (ne)prázdnost matice $B$
+\item \verb~mul_by_scal(-1)~ \ldots matice $A$ s~opačnými znaménky
+\item \verb~swap()~ \ldots výměna obsahu matic $A$ a~$C$
+\item \verb~operator+~ \ldots $A+C$, $B+D$
+\item \verb~operator-~ \ldots $A-C$, $B-D$
+\item \verb~subblock(1, 1, 2, 3)~ \ldots podmatice matice $B$:
+\[
+  \begin{bmatrix}
+    b_{1,1} & b_{1,2} & b_{1,3} \\
+    b_{2,1} & b_{2,2} & b_{2,3}
+  \end{bmatrix}
+\]
+\item \verb~subblock(2, 1, 4, 4)~ \ldots podmatice matice $B$:
+\[
+  \begin{bmatrix}
+    b_{2,1} & b_{2,2} & b_{2,3} & b_{2,4} \\
+    b_{3,1} & b_{3,2} & b_{3,3} & b_{3,4} \\
+    b_{4,1} & b_{4,2} & b_{4,3} & b_{4,4}
+  \end{bmatrix}
+\]
+\item \verb~column(i)~ \ldots všechny sloupce matice $B$
+\item \verb~operator!=, operator==~ \ldots $B \ne D$, $A = E$
+\item \verb~size(), max_size()~ \ldots počet prvků $A, B$
+\item \verb~const_iterator~ \ldots ukázka manipulace s~iterátory
+\item \verb~transpose()~ \ldots transposice matice $E$
+\end{enumerate}
 
-\vfill\eject
+\clearpage
 
 \begin{verbatim}
 ---------------------------------------------------------------
