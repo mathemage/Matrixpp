@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -O2
-OBJECTS = io.o arithmetics.o multiplication_int.o multiplication_double.o qr.o derived.o householder.o
+OBJECTS = io.o arithmetics.o multiplication_int.o multiplication_double.o derived.o householder.o qr_alg.o qr.o
 
 %.exe : %.o
 	$(CC) $(CFLAGS) $? -o $@

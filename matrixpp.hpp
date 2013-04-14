@@ -284,5 +284,5 @@ namespace mtrx {
   const double epsilon = 0.00009;               // hranice pro zaokrouhleni na nulu
 }
 
-#include "matrixpp.tpp"         // implementacni soubor s definicemi
+#include "matrixpp.tpp"    // implementacni soubor s definicemi
 #endif

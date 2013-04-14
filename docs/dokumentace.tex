@@ -134,6 +134,25 @@ determinant) použitím efektivních algoritmů.
 Matice bude representována ša\-blo\-no\-va\-nou třídou a bude brát v potaz
 zadání jiného tělesa pro prvky.
 
+\section{Zdrojové soubory}
+Hlavní části knihovny se nalézají v~souborech
+\begin{itemize}
+  \item \verb=matrixpp.hpp= \ldots deklarace struktur, tříd a~funkcí; též
+    inline funkce
+  \item \verb=matrixpp.tpp= \ldots definice struktur, tříd a~funkcí
+\end{itemize}
+V~duchu odděleného kódu byla knihovna rozdělena do dvou samostatných souborů.
+Jelikož však v~jazyce \cpp není dobře zahrnuta podpora
+pro~od\-dě\-le\-ný překlad šablonových funkcí/tříd,
+obešel autor tento problém připsáním řádku
+\begin{verbatim}
+#include "matrixpp.tpp"    // implementacni soubor s definicemi
+\end{verbatim}
+ke~konci souboru \verb=matrixpp.hpp=.
+Toto vloží soubor s~definicemi do jednoho souboru (jak to bude vnímat
+kompilátor), avšak knihovna bude sama ve~dvou souborech (jak to bude vnímat
+uživatel/programátor).
+
 \section{Struktura Field}
 
 Šablonovaná struktura s~účelem rozhraní pro definici maticového
@@ -546,6 +565,8 @@ Ukázka násobení dvou celočíselných matic (nad tělesem $\mathbb{Z}_5$ při
 hodnotě proměnné \verb~_order_ = 5~).
 Na~stroji
 \vskip.5em
+\phantomsection
+\label{tab:pc}
 \begin{tabular}{| c  l |}
 \hline
 \textbf{procesor} & Intel ``Sandy Bridge'' Core i5-2520M dual-core processor \\
@@ -565,7 +586,7 @@ Na~stroji
 zaokrouhleno}  \\
 \textbf{1. matice} & \textbf{2. matice} & \textbf{ na 2 desetinná
 místa)} \\
-\hline
+\hline \hline
 $10 \times 10$ & $10 \times 10$ & $0.82$ s \\
 $100 \times 100$ & $100 \times 100$ & $0.92$ s \\
 $1000 \times 1000$ & $1000 \times 1000$ & $47.51$ s \\
@@ -641,278 +662,92 @@ Dále jsou předvedeny následující funkce:
 \item Ověření, že matice příslušné Householderovy reflexe je jednotková $I_n$.
 \end{enumerate}
 
-\clearpage
+\section{Program qr.exe}
 
-\begin{verbatim}
----------------------------------------------------------------
-Choose option (enter the part in brackets)
-(S)ym            - symmetrization
-(D)ijkstra       - shortest path between node & other nodes
-(F)loyd-Warshall - shortest path between every 2 nodes
-tar(J)an         - strongly connected components
-(T)sort          - topological ordering
-(C)losure        - transitive closure
-(R)eduction      - transitive reduction
-l(I)st-convert   - from adjacency matrix to list of successors
-(M)atrix-convert - from list of successors to adjacency matrix
-c(L)ear          - clear screen (only for in *nix like OS) 
-Displa(Y)        - display the graph 
-(H)elp           - display this menu:) 
-(Q)uit           - quit the program 
----------------------------------------------------------------
->>
-\end{verbatim}
+Ukázka \emph{QR faktorizace\/}.
+Na stroji ze strany~\pageref{tab:pc} byly naměřeny tyto
+časy:
 
-Jak vidno, tuto nabídku lze kdykolit znova vyvolat pomocí
-příkazu {\tt h}:%
-\footnote{Příkazy lze zadávat velkými i malými písmeny abecedy.
-Dokonce ani nevadí, když jsou za prvním písmenem další znaky, ty se až do konce
-  řádku ignorují.}
+\vskip.5em
+\noindent
+\begin{tabular}{ | c || c | }
+\hline
+\textbf{Rozměry} & \textbf{Čas (průměr ze 3 testů
+zaokrouhleno}  \\
+\textbf{rozkládané matice} & \textbf{ na 2 desetinná místa)} \\
+\hline \hline
+$10 \times 10$ & $0.82$ s \\
+$100 \times 100$ & $1.37$ s \\
+$200 \times 200$ & $8.44$ s \\
+$400 \times 400$ & $2$ min $5.39$ s \\
+$500 \times 500$ & $5$ min $20.22$ s \\
+$600 \times 600$ & $16$ min $38.75$ s \\
+\hline
+\end{tabular}
+\vskip.75em
+Rekursivní rozklad má časovou složitost $\mathcal{O}(m \cdot n^3)$, neboli pro
+čtvercové matice $\mathcal{O}(n^4)$.
+S~vhodnými úpravami lze rozklad ještě urychlit, toto však ponechal autor jako
+jednu z~možností rozšíření.
 
-\begin{verbatim}
->> h 
-\end{verbatim}
+\section{Program qr\_alg.exe}
 
-\section{Vstup a příkazy programu}
-\subsection{Sym}
-Příkaz, jenž \uv{zorientuje každou hranu na obě strany}, dokáže i zajistit
-převod orientovaného grafu na neorientovaný.
+Implementace \emph{QR metody\/} \cite{qr-meth} pro~hledání vlastních čísel
+matice.
+Na témže stroji (viz strana~\pageref{tab:pc}\thinspace) byly naměřeny tyto
+časy:
 
-\begin{verbatim}
->> s
-List of successor representation:
-1. node -> 3(3.140000)
-3. node -> 1(3.140000)
-Matrix representation:
-----    ----    3.14
-----    ----    ----
-3.14    ----    ----
-\end{verbatim}
+\vskip.5em
+\noindent
+\begin{tabular}{ | c | r || c | }
+\hline
+\textbf{Rozměry} & \textbf{Počet} & \textbf{Čas (průměr ze 3 testů
+zaokrouhleno}  \\
+\textbf{vstupní matice} & \textbf{iterací} & \textbf{ na 2 desetinná místa)}
+\\
+\hline \hline
+$10 \times 10$ & $400$ & $0.9$ s \\
+$100 \times 100$ & $400$ & $3$ min $29.22$ s \\
+$500 \times 500$ & $400$ & $>41$ min \\
+$10 \times 10$ & $1000$ & $1.05$ s \\
+$100 \times 100$ & $1000$ & $8$ min $0.27$ s \\
+\hline
+\end{tabular}
+\vskip.5em
+Jednotlivé matice mezivýsledků se ``ořezávají'':
+prvky matice, jež jsou v~absolutní hodnotě
+\emph{menší\/} než konstanta \verb=epsilon=, se zaokrouhlí na $0$.
+Toto slouží pro ustálení a~lepší numerickou stabilitu.
 
-{\noindent \sl Pozn.~Vstup z \tt testing/sym2.in}
+\section{Testovací data}
 
-\subsection{Dijkstra}
-Příkaz spuštění {\sl Dijkstrova algoritmu\/} ze zadaného vrcholu.
+Ke generování matic\thinspace%
+\footnote{konkrétně hodnot jejich prvků}
+použil autor skripty napsané v~programovacím jazyce \textsc{Python}.
+Tyto jsou k~nalezení v~souborech:
+\begin{itemize}
+  \item bez~parametrů\thinspace%
+    \footnote{rozměry matic zapsány přímo ve skriptu}
+  \begin{itemize}
+    \item \verb=test/gen_double= pro reálné matice
+    \item \verb=test/gen_int= pro celočíselné matice
+  \end{itemize}
+  \item s~parametrem\thinspace%
+    \footnote{v pořadí: výška šířka minimální\_hodnota maximální\_hodnota}
+    \begin{itemize}
+      \item \verb=test/gen_double_arg= pro reálné matice
+      \item \verb=test/gen_int_arg= pro celočíselné matice
+    \end{itemize}
+\end{itemize}
+Všechny jednoduše generují ve~dvou \verb=for= cyklech náhodná čísla.
+Autor pořídil i~matice s~daty uloženými v~textových souborech.
+Tato však mají velikosti řádů desítek MiB, tudíž nemá cena je přikládat
+k~souborům zdrojového kódu.
+V~případě zájmu kontaktujte autora na~e-mailové adrese: 
 
-\begin{verbatim}
->> d
-Enter starting node of graph: 1
-From 1.node to all nodes respectively:
-0.000000 7.000000 9.000000 20.000000 20.000000 11.000000 
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/dijkstra2.in}
-
-\subsection{Floyd-Warshall}
-Příkaz spuštění {\sl Floyd-Warshallova algoritmu\/}.%
-\footnote{Mimochodem tento algoritmus je použit pro vytvoření grafu
-transitivního uzávěru v representaci se seznamem následovníků.
-Autor tak učinil z dvou prostých důvodů: zaprvé Floyd-Warshall podává lepší
-informaci o vahách mezi vrcholy jakožto jejich vzdálenosti; zadruhé algoritmus
-transitivního uzávěru je jen upravená verse Floyd-Warshallova algoritmu \sl :-)}
-
-
-\begin{verbatim}
->> f
-List of successor representation (i.e., transitive closure):
-1. node -> 4(3.600000) 2(1.200000) 1(1.100000)
-2. node -> 4(2.400000)
-3. node -> 4(6.700000) 2(4.300000) 1(3.100000)
-Matrix representation:
-1.10    1.20    ----    3.60
-----    0.00    ----    2.40
-3.10    4.30    0.00    6.70
-----    ----    ----    0.00
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/floyd\_warshall.in}
-
-\subsection{Tarjan}
-Příkaz spuštění {\sl Tarjanova algoritmu\/}.%
-\footnote{Počínaje od vrcholu s indexem 1, neb hlavní procedura zkoumá
-  nezpracované vrcholy v rostoucím pořadí indexů.}%
-\footnote{Tarjanův algoritmus zároveň určuje reversní topologické uspořádání
-  grafu komponent zadaného grafu.}
-
-\begin{verbatim}
->> j
-( 7 6 )
-( 8 4 3 )
-( 5 2 1 )
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/scc2.in}
-
-\subsection{TSort}
-Příkaz spuštění algoritmu pro nalezení {\sl topologického uspořádání\/}.%
-\footnote{V případě neexistence takového uspořádání (nastane právě v grafech s
-  cykly) se vypíše \tt NOT AN ACYCLIC GRAPH!}
-
-\begin{verbatim}
->> t
-Topological ordering: 1 4 2 3 5
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/tsort.in}
-
-\subsection{Closure}
-Příkaz spuštění algoritmu pro vytvoření {\sl transitivního uzávěru\/}.%
-\footnote{Zde použitá implementace funkce vrací matici sousednosti nalezeného
-  uzávěru.
-Ovšem knihovna poskytuje funkci {\tt listConvertBit}, jež matici dokáže převést
-  na representaci se seznamem následovníků.
-To je náležitě využito v {\tt main.c} pro zobrazení obou možných representací,
-  jak si lze prohlédnout v přiloženém výstupu.}
-
-\begin{verbatim}
->> c
-List of successor representation:
-1. node -> 5(1.000000) 4(1.000000) 3(1.000000) 2(1.000000) 1(1.000000)
-2. node -> 5(1.000000) 3(1.000000) 2(1.000000)
-3. node -> 5(1.000000) 3(1.000000)
-4. node -> 5(1.000000) 4(1.000000) 3(1.000000)
-5. node -> 5(1.000000)
-Matrix representation:
-1 1 1 1 1 
-0 1 1 0 1 
-0 0 1 0 1 
-0 0 1 1 1 
-0 0 0 0 1 
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/closure.in}
-
-\subsection{Reduction}
-Příkaz spuštění algoritmu pro vytvoření {\sl transitivního redukce.
-\vskip .45cm
-Pozn.~Tato implementace zvládá nalézt redukci {\bf pouze} v acyklických grafech.
-Autor z důvodů časové tísně a značné vyspělosti obecného algoritmu nebyl
-schopen vyřešit případ pro grafy s cykly a slibuje, že se do přístě napraví
-\sl :-)}
-\vskip .45cm
-
-Výstup toho příkazu je k nalezení na další stránce $\dots$
-
-\vfil\eject
-
-\begin{verbatim}
->> r
-List of successor representation:
-1. node -> 4(1.000000) 2(1.000000)
-2. node -> 3(1.000000)
-3. node -> 5(1.000000)
-4. node -> 3(1.000000)
-Matrix representation:
-0 1 0 1 0 
-0 0 1 0 0 
-0 0 0 0 1 
-0 0 1 0 0 
-0 0 0 0 0 
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/reduction2.in}
-
-\begin{verbatim}
->> r
-Warning! Given graph is NOT acyclic.
-The result of transitive reduction is ungranted!
-List of successor representation:
-1. node -> 2(1.000000)
-2. node -> 3(1.000000)
-3. node -> 1(1.000000)
-4. node -> 5(1.000000)
-5. node -> 6(1.000000)
-6. node -> 4(1.000000)
-Matrix representation:
-0 1 0 0 0 0 
-0 0 1 0 0 0 
-1 0 0 0 0 0 
-0 0 0 0 1 0 
-0 0 0 0 0 1 
-0 0 0 1 0 0 
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/reduction\_cyclic.in}
-
-\subsection{List-convert}
-Příkaz spuštění pro převod {\sl maticové \rm representace na representaci se
-  \sl seznamem následovníků\/}.%
-\footnote{Příkaz dokáže fungovat obecně.
-Pro účely jednoduchosti však {\sl main.c} využívá funkci tak, že seznam
-  následovníků nejprve převede na matici a ta se pomocí {\sl list-convert}
-  převede zpět.
-Samozřejmě je list-convert využit ještě u funkcí vracející maticové
-  representací jakými jsou například {\tt closure\/ {\rm či} reduction\/}.
-}
-\vfil\eject
-\begin{verbatim}
->> i
-Converting the already matrix-converted graph
-  to list-of-sucessors representation...
-1. node -> 4(0.200000) 3(0.600000) 2(0.200000)
-2. node -> 3(0.300000)
-3. node -> 5(0.500000)
-4. node -> 5(0.800000) 3(0.200000)
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/list\_convert.in}
-
-\subsection{Matrix-convert}
-Příkaz spuštění pro převod se {\sl seznamem následovníků \rm representace na
-  representaci \sl maticovou\/}.%
-\footnote{Příkaz dokáže fungovat obecně.
-Pro účely jednoduchosti však {\tt main.c} využívá funkci tak, že seznam
-  následovníků nejprve převede na matici a ta se pomocí {\tt list-convert}
-  převede zpět.
-Samozřejmě je list-convert využit ještě u funkcí vracející maticové
-  representací jakými jsou například {\tt closure či \tt reduction\/}.
-}
-
-\begin{verbatim}
->> m
-
-----    0.20    0.60    0.20    ----
-----    ----    0.30    ----    ----
-----    ----    ----    ----    0.50
-----    ----    0.20    ----    0.80
-----    ----    ----    ----    ----
-\end{verbatim}
-
-{\noindent \sl Pozn.~Vstup z \tt testing/matrix\_convert.in}
-
-\subsection{Display}
-Příkaz pro zobrazení grafu v representaci se seznamem následovníků.
-
-\noindent {\bf Formát:}
-
-\noindent {\sl $<$index výchozího uzlu$>$\tt.node -> \sl $<$index příchozího
-  uzlu$>$\tt (\sl$<$váha$>$\tt)}
-
-\begin{verbatim}
->> y
-1. node -> 4(0.200000) 3(0.600000) 2(0.200000)
-2. node -> 3(0.300000)
-3. node -> 5(0.500000)
-4. node -> 5(0.800000) 3(0.200000)
-\end{verbatim}
-
-\subsection{Clear}
-Příkaz na vyčištění obrazovky (v abstraktním slova smyslu, samozřejmě, jinak
-použijte suchý hadřík či látku {\tt :-)}
-Funguje převážně na systémech *nixového typu, páč využívá systémové procedury
-\verb=clear=.
-
-\begin{verbatim}
->> l
-\end{verbatim}
-
-\subsection{Quit}
-A tady končí naše cesta...
-
-\begin{verbatim}
->> q
-Bye bye...
-\end{verbatim}
+\begin{center}
+\href{mailto:mathemage@gmail.com}{\nolinkurl{mathemage@gmail.com}}
+\end{center}
 
 \pagebreak
 
@@ -930,6 +765,11 @@ Matrix<T> operator*(const Matrix<T> &, const Matrix<T> &);\end{verbatim}
 
     Návrhy od~autora: invertibilní matice, ortogonální matice, horní/dolní
     trojúhelníkové matice, permutační matice, \ldots
+  \item {\bf QR rozklad\/} nabízí se volné pole působnosti pro vylepšení.
+    Lze ku\-pří\-kla\-du vymyslet způsob, jak tuto dekomposici implementovat
+    nerekursivně.
+  \item V~{\bf QR metodě\/} lze vylepšit zaokrouhlování hodnot a~vyřešit tím
+    otázku numerické stability a~rychlosti konvergence.
   \item {\bf LUP rozklad\/} byl vynechán, neboť jeho využitelnost je možno
     do\-sta\-teč\-ně uspokojivě nahradit \emph{QR rozkladem\/}.
     Přesto však autor vřele uvítá jakékoli snahy o~toto rozšíření.

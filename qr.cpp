@@ -21,10 +21,6 @@ int main(int argc, const char* argv[]) {
   cout << "R:\n" << R << endl;
   cout << "A:\n" << A << endl;
   cout << "Q * R:\n" << Q * R << endl;
-  SqrMtrx<> B = A;
-  unsigned it = 400;
-  B = B.QR_algorithm(it);
-  cout << "A.QR_algorithm(" << it << "):\n" << B << endl;
   cout << "===============/QR factorization==============" << endl;
 
   return 0;
