@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "all.hpp"
 
-int main(int argc, const char* argv[]) {
+int main() {
   cout << "========================================\nTrida Vect" << endl;
   Vect<> v1;
   cin >> v1;

@@ -9,7 +9,7 @@
 #include "all.hpp"
 #include<iomanip>
 
-int main(int argc, const char* argv[]) {
+int main() {
   cout << std::setprecision(8);
 
   cout << "================Vect features=================" << endl;
@@ -42,7 +42,6 @@ int main(int argc, const char* argv[]) {
   cout << "v.Householder_canon():\n" << v.Householder_canon() << endl;
   cout << "v.Householder_canon() * v:\n" << v.Householder_canon() * v << endl;
 
-  
   Vect<> canonic = v.e1_reflection();        // "norma"-nasobek vektoru e_1
   cout << "canonic:\n" << canonic << endl;
   cout << "canonic.Householder_canon():\n" << canonic.Householder_canon() << endl;

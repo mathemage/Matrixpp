@@ -21,6 +21,9 @@
 \newcommand{\mpp}{\textsc{Matrix++}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\V}{\mathbf{v}}
+\newcommand{\U}{\mathbf{u}}
+\newcommand{\h}{\mathbf{H}}
+\newcommand{\A}{\mathbf{A}}
 \newcommand{\x}{\mathbf{x}}
 
 \hyphenation{ma-ti-ce}
@@ -298,8 +301,8 @@ $\R$.)
   \begin{itemize}
   \item \verb~operator+~, \verb~operator-~, \verb~operator*~ \ldots součet,
     rozdíl, součin\thinspace%
-    \footnote{metodou dle definice: časová složitost $\mathcal{O}(m \cdot n
-    \cdot k)$ pro součin matic o rozměrech $m \times k$ a~$k \times n$.}
+    \footnote{metodou dle definice: časová složitost $\mathcal{O}(m \cdot k
+    \cdot n)$ pro součin matic o rozměrech $m \times k$ a~$k \times n$.}
     dvou matic
   \end{itemize}
 \end{itemize}
@@ -366,16 +369,16 @@ template<typename T=double> class Vect : public Matrix<T>;
       (Implementováno pro šablonu se~specializovaným typem \verb=double=.)
     \item \verb=Householder= \ldots matice \emph{Householderovy reflexe\/}
       \[
-        \mathbf{H}(\V) = \mathbf{I}_n - \frac{2}{\V^T\V}\V\V^T
+        \h(\V) = \mathbf{I}_n - \frac{2}{\V^T\V}\V\V^T
       \]
     \item \verb=Householder_canon= \ldots matice zobrazující $\V$ do vektoru
       z~metody \verb=e1_reflection=\thinspace%
       \footnote{konkrétně $||\V||\cdot \mathbf{e}_1$}
       \[
-        \mathbf{H} :=
+        \h :=
         \begin{cases}
           \mathbf{I}_n &\mbox{iff } \V = ||\V||\cdot \mathbf{e}_1 \\
-          \mathbf{H}(\V - ||\V||\cdot \mathbf{e}_1) & \mbox{jinak}
+          \h(\V - ||\V||\cdot \mathbf{e}_1) & \mbox{jinak}
         \end{cases}
       \]
   \end{itemize}
@@ -445,6 +448,23 @@ Seznam použitých výjimek:
   \end{itemize}
 \end{itemize}
 
+\section{Ostatní funkce a proměnné}
+
+Co se jinam nevešlo \ldots
+
+\begin{itemize}
+\item proměnné
+  \begin{itemize}
+  \item \verb=epsilon= \ldots konstanta ``hranice'' hodnot, které se již
+    považují dostatečně blízké $0$
+  \end{itemize}
+\item funkce
+  \begin{itemize}
+  \item \verb=unit_matrix= \ldots pro zadané těleso a~zadaný rozměr $n$ vytvoří
+    čtvercovou matici jakožto objekt třídy \verb=SqrMtrx=
+  \end{itemize}
+\end{itemize}
+
 \pagebreak
 
 \part{Uživatelský manuál}
@@ -459,8 +479,8 @@ $ make [jmeno].exe
 \section{Program io.exe} \label{io.exe}
 
 Tato část testuje vstupně/výstupní operace.
-Na standardním vstupu (pomocí objektu \verb=cin=) přijme následující údaje o
-matici:
+Na standardním vstupu (pomocí objektu \verb=cin=) přijme následující údaje
+o~matici:
 \begin{itemize}
 \item počet řádků $m$
 \item počet sloupců $n$
@@ -518,6 +538,107 @@ Dále jsou předvedeny následující funkce:
 \item \verb~size(), max_size()~ \ldots počet prvků $A, B$
 \item \verb~const_iterator~ \ldots ukázka manipulace s~iterátory
 \item \verb~transpose()~ \ldots transposice matice $E$
+\end{enumerate}
+
+\section{Program multiplication\_int.exe}
+
+Ukázka násobení dvou celočíselných matic (nad tělesem $\mathbb{Z}_5$ při
+hodnotě proměnné \verb~_order_ = 5~).
+Na~stroji
+\vskip.5em
+\begin{tabular}{| c  l |}
+\hline
+\textbf{procesor} & Intel ``Sandy Bridge'' Core i5-2520M dual-core processor \\
+                  & (2.5~3.2GHz Turbo Boost, 3MB cache, 35W TDP) \\
+\textbf{RAM}      & 4GB DDR3-1333 \\
+\textbf{disk}     & 320GB 7200RPM Seagate hard drive \\
+\textbf{OS}       & Ubuntu 12.04.2 LTS \\
+\hline
+\end{tabular}
+\vskip1em
+\noindent byly následující doby výpočtu:
+\vskip.5em
+\noindent
+\begin{tabular}{ | c | c || c | }
+\hline
+\textbf{Rozměry} & \textbf{Rozměry} & \textbf{Čas (průměr ze 3 testů
+zaokrouhleno}  \\
+\textbf{1. matice} & \textbf{2. matice} & \textbf{ na 2 desetinná
+místa)} \\
+\hline
+$10 \times 10$ & $10 \times 10$ & $0.82$ s \\
+$100 \times 100$ & $100 \times 100$ & $0.92$ s \\
+$1000 \times 1000$ & $1000 \times 1000$ & $47.51$ s \\
+$2000 \times 2000$ & $2000 \times 2000$ & $53$ min $52.04$ s \\
+\hline
+\end{tabular}
+
+\section{Program multiplication\_double.exe}
+
+Ukázka násobení dvou reálných matic na témže stroji.
+
+\vskip.5em
+\noindent
+\begin{tabular}{ | c | c || c | }
+\hline
+\textbf{Rozměry} & \textbf{Rozměry} & \textbf{Čas (průměr ze 3 testů
+zaokrouhleno}  \\
+\textbf{1. matice} & \textbf{2. matice} & \textbf{ na 2 desetinná
+místa)} \\
+\hline \hline
+$10 \times 10$ & $10 \times 10$ & $0.76$ s \\
+$100 \times 100$ & $100 \times 100$ & $0.86$ s \\
+$1000 \times 1000$ & $1000 \times 1000$ & $20.36$ s \\
+$2000 \times 2000$ & $2000 \times 2000$ & $2$ min $15.89$ s \\
+$4000 \times 4000$ & $4000 \times 4000$ & $18$ min $19.58$ s \\
+\hline
+\end{tabular}
+\vskip.75em
+Ač je pokaždé použit stejný algoritmus složitosti $\mathcal{O}(m \cdot k \cdot
+n) = \mathcal{O}(n^3)$, výrazně nižší čas oproti předchozímu případu
+celočíselné matice je zřejmě způ\-so\-ben dodatečnou režií pro~konečné těleso
+(výpočty v~modulu).
+
+\section{Program derived.exe}
+
+Tento modul ověřuje funkčnost konverzních konstruktorů a~operátorů mezi
+základní třídou \verb=Matrix= a~jejími potomky \verb=Vect=, \verb=SqrMtrx=.
+Slouží především pro verifikaci OOP rysů než-li ukázku samotných matic.
+
+Pro konkrétnější detaily nahlédněte do zdrojového souboru \verb=derived.cpp=.
+
+\section{Program householder.exe}
+
+Ukázka Householderovy transformace \cite{householder} a~jejích pomocných
+funkcí.
+Nejprve jsou zadány vstupní vektory (formát viz Sekce~\ref{io.exe}\thinspace):
+\begin{enumerate}
+\item reálný vektor $u$ (nad tělesem $\mathbb{R}$)
+\item reálný vektor $v$ (nad tělesem $\mathbb{R}$)
+\end{enumerate}
+Dále jsou předvedeny následující funkce:
+\begin{enumerate}
+\item \verb~outer_product()~ \ldots $vv^T$
+\item \verb~inner_product()~ \ldots $v^Tv$
+\item \verb~unit_matrix()~ \ldots reálná jednotková matice:
+\[
+  \begin{bmatrix}
+    1 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1
+  \end{bmatrix}
+\]
+\item Přeškálování $\U := \frac{||\V||}{||\U||} \U$, aby $||\U|| = ||\V||$.
+\item \verb~Householder()~ \ldots matice $\A := \h(\U - \V)$
+\item Porovnání vektorů $\V$ a~$\h(\U - \V) \cdot \U$ (většinou se shodují na
+  mnoho desetinných místech)
+\item \verb~Householder_canon()~ \ldots matice $\h(\V - ||\V|| \cdot e_1)$
+\item Porovnání $\h(\V - ||\V|| \cdot e_1) \cdot \V$ s~vektorem~$\V$.
+\item \verb~e1_reflection()~ \ldots vektor $||\V|| \cdot e_1$
+\item Ověření, že matice příslušné Householderovy reflexe je jednotková $I_n$.
 \end{enumerate}
 
 \clearpage
@@ -803,7 +924,12 @@ Nabízí se nemalé množství prostoru pro vylepšení:
     Lze vylepšit přepsáním funkce
 \begin{verbatim}template<typename T>
 Matrix<T> operator*(const Matrix<T> &, const Matrix<T> &);\end{verbatim}
-    např. pomocí \emph{Strassenova algoritmu\/}.
+    např. pomocí \emph{Strassenova vzorců\/}.
+  \item {\bf Další potomci třídy\/} \verb=Matrix= (s~kontrolou, že se skutečně
+    jedná o tento typ matic např. kvůli zadávání ze~standardního vstupu).
+
+    Návrhy od~autora: invertibilní matice, ortogonální matice, horní/dolní
+    trojúhelníkové matice, permutační matice, \ldots
   \item {\bf LUP rozklad\/} byl vynechán, neboť jeho využitelnost je možno
     do\-sta\-teč\-ně uspokojivě nahradit \emph{QR rozkladem\/}.
     Přesto však autor vřele uvítá jakékoli snahy o~toto rozšíření.
@@ -824,6 +950,15 @@ Norma \textsc{ISO/IEC N3290} programovacího jazyka \cpp.
   no.~3,
   vol.~8,
   pp.~637-657.
+
+\bibitem{householder}
+  {\sc Householder}, A. S.
+  Unitary Triangularization of a Nonsymmetric Matrix.
+  In: \emph{Journal of the ACM\/}.
+  1958,
+  no.~5,
+  vol.~4,
+  pp.~339-342.
 
 \end{thebibliography}
 
