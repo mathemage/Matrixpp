@@ -24,66 +24,11 @@ namespace mtrx {
   }
   // =================================/TELESA====================================================
 
-  // ==================================PREDDEFINOVANA TELESA=====================================
-  // TELESO REALNYCH CISEL
-  double minus_double(const double & rhs) { return - rhs; }
-  double reciprocal_double(const double & rhs) { return 1 / rhs; }
-  double plus_double(const double & lhs, const double & rhs) { return lhs + rhs; }
-  double times_double(const double & lhs, const double & rhs) { return lhs * rhs; }
-  bool equals_double(const double & lhs, const double & rhs) { return lhs == rhs; }
-  Field<double> fld_reals(0, 1, minus_double, reciprocal_double,  plus_double,
-      times_double, equals_double);
-
-  // PRVOTELESO
-  // vysledek modula mezi hodnotami prvotelesa
-  int mod(const int & value, int modulo) { return (value % modulo + modulo) % modulo; }
-  template<int Order> int minus_pf(const int & rhs) { return mod(-rhs, Order); }
-
-  template<int Order>
-  int reciprocal_pf(const int & rhs) {     // rozsireny Eukliduv algoritmus s Bezoutovy koeficienty
-    int divisor = mod(rhs, Order);
-    if (0 == divisor) {
-      throw InverseOfNullException();
-    }
-    int dividend = Order;
-    int remainder;
-    int bezout1 = 0; int bezout2 = 1;      // predposledni a posledni Bezoutuv koeficient
-
-    while (divisor > 1) {
-      bezout1 = bezout1 - (dividend / divisor) * bezout2;
-      std::swap(bezout1, bezout2);
-      remainder = dividend % divisor;
-      dividend = divisor;
-      divisor = remainder;
-    }
-    return mod(bezout2, Order);
-  }
-
-  template<int Order>
-  int plus_pf(const int & lhs, const int & rhs) {
-    return mod(mod(lhs,Order)+mod(rhs,Order), Order);
-  }
-
-  template<int Order>
-  int times_pf(const int & lhs, const int & rhs) {
-    return mod(mod(lhs,Order)*mod(rhs,Order), Order);
-  }
-
-  template<int Order>
-  bool equals_pf(const int & lhs, const int & rhs) {
-    return (lhs - rhs) % Order == 0;
-  }
-
-  // teleso zbytkovych trid radu "_order_"
-  const int _order_ = 5;
-  Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>,
-      plus_pf<_order_>, times_pf<_order_>, equals_pf<_order_>);
-  // =================================/PREDDEFINOVANA TELESA=====================================
-
   // ==================================OBECNA MATICE=============================================
   // defaultni konstruktor "Matrix" - zabaleni dat do objektu tridy
-  template<typename T>
-  Matrix<T>::Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * values=0) :
+  // specializace pro realne matice s defaultnim telesem R
+  /*template<>
+  Matrix<double>::Matrix(const Field<double> & fld=fld_reals, unsigned h=0, unsigned w=0, double * values=0) :
     _fld(&fld), _height(h), _width(w), _values(values) {
     // kontrola pro potomky
     try {
@@ -95,7 +40,23 @@ namespace mtrx {
       display_exception(e);
     }
   } 
+ */
 
+  // obecny pripad konstruktoru
+  template<typename T>
+  Matrix<T>::Matrix(const Field<T> & fld /* = fld_reals */, unsigned h /* = 0 */, unsigned w /* = 0 */, T * values /* = 0 */) :
+    _fld(&fld), _height(h), _width(w), _values(values) {
+    // kontrola pro potomky
+    try {
+      if (!is_valid()) {                         // polymorfni is_valid()
+        throw;
+      }
+    }
+    catch (exception & e) {
+      display_exception(e);
+    }
+  } 
+ 
   // rovnost matic
   template<typename T>
   bool Matrix<T>::operator==(const Matrix<T> & rhs) const {
@@ -212,8 +173,8 @@ namespace mtrx {
   Matrix<T> Matrix<T>::transpose() const {                            // transposice matice
     Matrix<T> res(*_fld, _width, _height);
     res._values = new T [_width*_height];
-    for (int i = 0; i < _height; i++) {
-      for (int j = 0; j < _width; j++) {
+    for (unsigned i = 0; i < _height; i++) {
+      for (unsigned j = 0; j < _width; j++) {
         res._values[j*_height+i] = at(i,j);
       }
     }
@@ -297,7 +258,7 @@ namespace mtrx {
       for (int i = 0; i < x_h; i++) {
         for (int j = 0; j < y_w; j++, it++) {
           *it = res._fld->_zero;
-          for (int k = 0; k < x.get_width(); k++) {
+          for (unsigned k = 0; k < x.get_width(); k++) {
             *it = res._fld->_plus(*it, res._fld->_times(x.at(i, k), y.at(k, j)));
           }
         }
@@ -313,7 +274,7 @@ namespace mtrx {
   template<>
   Matrix<double> Matrix<double>::round_to_zeroes() const {
     Matrix<double> res(*this);
-    for (typename Matrix<double>::iterator it = res.begin(); it != res.end();
+    for (Matrix<double>::iterator it = res.begin(); it != res.end();
         it++) {
       if (fabs(*it) < epsilon) {
         *it = 0;
@@ -326,7 +287,7 @@ namespace mtrx {
   // ==================================VEKTORY===================================================
   // defaultni konstruktor "Vect" - implicitni sirka 1
   template<typename T>
-  Vect<T>::Vect(const Field<T> & fld=fld_reals, unsigned h=0, T * values=0) :
+  Vect<T>::Vect(const Field<T> & fld /* =fld_reals */, unsigned h /* =0 */, T * values /* =0 */) :
     Matrix<T>(fld, h, 1, values) { } 
 
   template<typename T>
@@ -360,7 +321,7 @@ namespace mtrx {
   // ==================================CTVERCOVE MATICE==========================================
   // defaultni konstruktor "SqrMtrx" - implicitne stejne rozmery
   template<typename T>
-  SqrMtrx<T>::SqrMtrx(const Field<T> & fld=fld_reals, unsigned dim=0, T * values=0) :
+  SqrMtrx<T>::SqrMtrx(const Field<T> & fld /* =fld_reals */, unsigned dim /* =0 */, T * values /* =0 */) :
     Matrix<T>(fld, dim, dim, values) { } 
 
   template<typename T>
@@ -395,8 +356,8 @@ namespace mtrx {
   template<typename T>
   SqrMtrx<T> unit_matrix(unsigned dim, const Field<T> & fld=fld_reals) {  // 1kova matice
     T * values = new T [dim * dim];
-    for (int i = 0; i < dim; i++) {
-      for (int j = 0; j < dim; j++) {
+    for (unsigned i = 0; i < dim; i++) {
+      for (unsigned j = 0; j < dim; j++) {
         values[i*dim + j] = (i == j) ? fld._one : fld._zero;
       }
     }
@@ -407,7 +368,7 @@ namespace mtrx {
   Vect<double> Vect<double>::e1_reflection() {    // "norma" nasobek vektoru e_1
     double * can_val = new double [_height];
     can_val[0] = sqrt(norm_squared());
-    for (int i = 1; i < _height; i++) {
+    for (unsigned i = 1; i < _height; i++) {
       can_val[i] = _fld->_zero;
     }
     Vect<double> res(*_fld, _height, can_val);

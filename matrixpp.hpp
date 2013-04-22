@@ -97,7 +97,64 @@ namespace mtrx {
       return _plus(lhs, _minus(rhs));
     }
   };
+
   // ================================/interface===================================
+
+  // ==================================PREDDEFINOVANA TELESA=====================================
+  // TELESO REALNYCH CISEL
+  double minus_double(const double & rhs) { return - rhs; }
+  double reciprocal_double(const double & rhs) { return 1 / rhs; }
+  double plus_double(const double & lhs, const double & rhs) { return lhs + rhs; }
+  double times_double(const double & lhs, const double & rhs) { return lhs * rhs; }
+  bool equals_double(const double & lhs, const double & rhs) { return lhs == rhs; }
+  const Field<double> fld_reals(0, 1, minus_double, reciprocal_double,  plus_double,
+      times_double, equals_double);
+
+  // PRVOTELESO
+  // vysledek modula mezi hodnotami prvotelesa
+  int mod(const int & value, int modulo) { return (value % modulo + modulo) % modulo; }
+  template<int Order> int minus_pf(const int & rhs) { return mod(-rhs, Order); }
+
+  template<int Order>
+  int reciprocal_pf(const int & rhs) {     // rozsireny Eukliduv algoritmus s Bezoutovy koeficienty
+    int divisor = mod(rhs, Order);
+    if (0 == divisor) {
+      throw InverseOfNullException();
+    }
+    int dividend = Order;
+    int remainder;
+    int bezout1 = 0; int bezout2 = 1;      // predposledni a posledni Bezoutuv koeficient
+
+    while (divisor > 1) {
+      bezout1 = bezout1 - (dividend / divisor) * bezout2;
+      std::swap(bezout1, bezout2);
+      remainder = dividend % divisor;
+      dividend = divisor;
+      divisor = remainder;
+    }
+    return mod(bezout2, Order);
+  }
+
+  template<int Order>
+  int plus_pf(const int & lhs, const int & rhs) {
+    return mod(mod(lhs,Order)+mod(rhs,Order), Order);
+  }
+
+  template<int Order>
+  int times_pf(const int & lhs, const int & rhs) {
+    return mod(mod(lhs,Order)*mod(rhs,Order), Order);
+  }
+
+  template<int Order>
+  bool equals_pf(const int & lhs, const int & rhs) {
+    return (lhs - rhs) % Order == 0;
+  }
+
+  // teleso zbytkovych trid radu "_order_"
+  const int _order_ = 5;
+  const Field<int> pf(0, 1, minus_pf<_order_>, reciprocal_pf<_order_>,
+      plus_pf<_order_>, times_pf<_order_>, equals_pf<_order_>);
+  // =================================/PREDDEFINOVANA TELESA=====================================
 
   // =================================tridy matic=================================
   // KONTEJNER MATIC
@@ -134,7 +191,7 @@ namespace mtrx {
 
     // ============================KANONICKA ČÁST===============================
     // defaultni konstruktor - zabaleni dat do objektu tridy
-    Matrix(const Field<T> & fld, unsigned h, unsigned w, T * values);
+    Matrix(const Field<T> & fld=fld_reals, unsigned h=0, unsigned w=0, T * values=0);
     Matrix & operator=(const Matrix & m);       // prirazeni
     Matrix(const Matrix & m) : _fld(m._fld) {   // copy-constructor
       _values = 0;                              // kvuli dereferenci v delete - viz operator=
@@ -218,7 +275,7 @@ namespace mtrx {
 
     // ============================KANONICKA ČÁST===============================
     // defaultni konstruktor - implicitni sirka 1
-    Vect(const Field<T> & fld, unsigned h, T * values);
+    Vect(const Field<T> & fld=fld_reals, unsigned h=0, T * values=0);
     Vect & operator=(const Vect & v);           // prirazeni
     Vect(const Vect & v) : Matrix<T>(v) { }     // copy-constructor
     // ===========================/KANONICKA ČÁST===============================
@@ -266,7 +323,7 @@ namespace mtrx {
 
     // ============================KANONICKA ČÁST===============================
     // defaultni konstruktor - implicitne stejne rozmery
-    SqrMtrx(const Field<T> & fld, unsigned dim, T * values);
+	SqrMtrx(const Field<T> & fld=fld_reals, unsigned dim=0, T * values=0);
     SqrMtrx & operator=(const SqrMtrx & r);           // prirazeni
     SqrMtrx(const SqrMtrx & v) : Matrix<T>(v) { }     // copy-constructor
     // ===========================/KANONICKA ČÁST===============================

@@ -9,13 +9,14 @@
 #include "all.hpp"
 
 int main() {
-  Matrix<int> mi(pf);
   Matrix<> md;
+  Matrix<int> mi(pf);
+  
   cout << "md is " << (md.empty() ? "empty" : "non-void") << endl;
   cin >> mi >> md;
   cout << "md is " << (md.empty() ? "empty" : "non-void") << endl;
   cout << "mi:\n" << mi << "\nmd:\n" << md << endl;
-
+  
   cout << "Skalarni nasobek: " << endl;
   cout << mi.mul_by_scal(-1) << endl << endl << md.mul_by_scal(20) << endl;
 
@@ -31,27 +32,27 @@ int main() {
   cout << "mi - mi2:\n" << mi - mi2 << endl;
 
   cout << endl;
-
+  
   Matrix<> md2;
   cin >> md2;
   cout << "md:\n" << md << endl;
   cout << "md2:\n" << md2 << endl;
   cout << "md + md2:\n" << md + md2 << endl;
   cout << "md - md2:\n" << md - md2 << endl;
-
+  
   cout << "Podmatice: " << endl;
   cout << "md.subblock(1, 1, 2, 3):\n" << md.subblock(1, 1, 2, 3) << endl;
   cout << "md.subblock(2, 1, 4, 4):\n" << md.subblock(2, 1, 4, 4) << endl;
   
-  for (int i = 0; i < md.get_width(); i++) {
+  for (unsigned i = 0; i < md.get_width(); i++) {
     cout << i << ". column:\n" << md.column(i) << endl << endl;
   }
-
+  
   cout << "Rovnost matic: " << endl;
   cin >> mi2;
   cout << ((md != md2) ? "md != md2" : "md == md2") << endl;
   cout << ((mi == mi2) ? "mi == mi2" : "mi != mi2") << endl;
-
+  
   cout << "Velikost matic: " << endl;
   cout << "mi: " << mi.size() << endl;
   cout << "md: " << md.max_size() << endl;

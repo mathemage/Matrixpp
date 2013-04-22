@@ -207,7 +207,7 @@ template<typename T> struct Field;
 
 \subsection{Předdefinovaná tělesa}
  
-Autor předdefinoval v~souboru \verb=matrix.tpp= následující příklady těles:
+Autor předdefinoval v~souboru \verb=matrix.hpp= následující příklady těles:
 \begin{itemize}
   \item \verb=Field<double> fld_reals= \ldots standardní těleso $\R$ definované
     nad~datovým typem \verb=double=
@@ -490,7 +490,10 @@ Co se jinam nevešlo \ldots
 Pro účely názorné ukázky knihovny \mpp byly sepsány testovací programy pro
 demonstraci jednotlivých funkcionalit.
 Tyto se nacházejí v~souborech tvaru \verb=[jmeno].cpp= a s~pomocí přiloženého
-\verb=Makefile= je lze přeložit příkazy tvaru
+\verb=Makefile= je lze\thinspace%
+\footnote{v linuxovém/unixovém prostředí za přítomnosti programu
+\textsc{make\/}.}
+přeložit příkazy tvaru
 \begin{verbatim}
 $ make [jmeno].exe
 \end{verbatim}
